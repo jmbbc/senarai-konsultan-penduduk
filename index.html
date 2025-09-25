@@ -4,88 +4,34 @@
   <meta charset="UTF-8">
   <title>Direktori Perkhidmatan Penduduk</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Import Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #eef2f7;
-      padding: 20px;
-      margin: 0;
+    .card-image img {
+      max-height: 150px;
+      object-fit: contain;
     }
-
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
-
-    #filterBidang {
-      display: block;
-      margin: 0 auto 30px;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      max-width: 400px;
-      width: 100%;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 15px auto;
-      max-width: 600px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease;
-    }
-
-    .card:hover {
-      transform: scale(1.01);
-    }
-
-    .card h3 {
-      margin-top: 0;
-      color: #34495e;
-    }
-
-    .card p {
-      margin: 6px 0;
-      color: #555;
-    }
-
-    .card img {
-      max-width: 100%;
-      border-radius: 6px;
-      margin-top: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    @media screen and (max-width: 600px) {
-      h1 {
-        font-size: 22px;
-      }
-
-      #filterBidang {
-        font-size: 14px;
-      }
-
-      .card {
-        padding: 15px;
-        margin: 10px;
-        max-width: 100%;
-      }
-    }
+    .is-hidden { display: none; }
   </style>
 </head>
 <body>
-  <h1>Senarai Perkhidmatan Penduduk</h1>
-  <select id="filterBidang">
-    <option value="">Tapis ikut bidang...</option>
-  </select>
-  <div id="cards"></div>
+  <section class="section">
+    <div class="container">
+      <h1 class="title has-text-centered">Senarai Perkhidmatan Penduduk</h1>
+
+      <div class="field has-text-centered">
+        <div class="control">
+          <div class="select is-medium">
+            <select id="filterBidang">
+              <option value="">Tapis ikut bidang...</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="cards" class="columns is-multiline"></div>
+    </div>
+  </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script>
@@ -134,19 +80,30 @@
         const status = row["Status"]?.toLowerCase();
 
         if (status === "approved" || !status) {
+          const column = document.createElement('div');
+          column.className = 'column is-6-tablet is-4-desktop';
+
           const card = document.createElement('div');
           card.className = 'card';
           card.innerHTML = `
-            <h3>${row["Nama penghuni"] || 'Tanpa Nama'}</h3>
-            <p><strong>Nama Syarikat:</strong> ${row["Nama syarikat"] || '-'}</p>
-            <p><strong>Telefon Syarikat:</strong> ${row["Nombor telefon syarikat"] || '-'}</p>
-            ${showJawatan && row["Jawatan di dalam syarikat"] ? `<p><strong>Jawatan:</strong> ${row["Jawatan di dalam syarikat"]}</p>` : ''}
-            <p><strong>Bidang:</strong> ${bidang}</p>
-            <p><strong>Sub-bidang:</strong> ${subBidang}</p>
-            <p><strong>Perkhidmatan:</strong> ${row["Butiran perkhidmatan yang ditawarkan"] || '-'}</p>
-            ${row["Gambar kad (Business card)"] ? `<img src="${row["Gambar kad (Business card)"]}" alt="Kad Bisnes">` : ''}
+            <div class="card-content">
+              <p class="title is-5">${row["Nama penghuni"] || 'Tanpa Nama'}</p>
+              <p><strong>Nama Syarikat:</strong> ${row["Nama syarikat"] || '-'}</p>
+              <p><strong>Telefon Syarikat:</strong> ${row["Nombor telefon syarikat"] || '-'}</p>
+              ${showJawatan && row["Jawatan di dalam syarikat"] ? `<p><strong>Jawatan:</strong> ${row["Jawatan di dalam syarikat"]}</p>` : ''}
+              <p><strong>Bidang:</strong> ${bidang}</p>
+              <p><strong>Sub-bidang:</strong> ${subBidang}</p>
+              <p><strong>Perkhidmatan:</strong> ${row["Butiran perkhidmatan yang ditawarkan"] || '-'}</p>
+            </div>
+            ${row["Gambar kad (Business card)"] ? `
+              <div class="card-image has-text-centered">
+                <figure class="image is-inline-block">
+                  <img src="${row["Gambar kad (Business card)"]}" alt="Kad Bisnes">
+                </figure>
+              </div>` : ''}
           `;
-          container.appendChild(card);
+          column.appendChild(card);
+          container.appendChild(column);
         }
       });
     }
