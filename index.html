@@ -53,27 +53,68 @@
   <script>
     const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?output=csv';
     let allData = [];
-    let bidangList = [];
+
+    const bidangTetap = {
+      "Pengurusan dan Perniagaan": [
+        "Konsultan Perniagaan",
+        "Perunding Strategi",
+        "Pegawai Sumber Manusia (HR)",
+        "Perunding Latihan & Pembangunan"
+      ],
+      "Kewangan & Audit": [
+        "Akauntan Bertauliah",
+        "Juruaudit (Dalaman & Luaran)",
+        "Perunding Cukai",
+        "Pegawai Bank / Perunding Pelaburan"
+      ],
+      "Perundangan & Peraturan": [
+        "Peguamcara & Peguambela",
+        "Pegawai Syariah",
+        "Pesuruhjaya Sumpah",
+        "Notari Awam"
+      ],
+      "Hartanah & Pembinaan": [
+        "Perunding Hartanah",
+        "Juruukur Bahan (QS)",
+        "Juruukur Tanah",
+        "Arkitek",
+        "Jurutera Awam",
+        "Jurutera Mekanikal & Elektrikal (M&E)",
+        "Perancang Bandar & Wilayah"
+      ],
+      "Kesihatan, Keselamatan & Alam Sekitar (EHS/OSH)": [
+        "Konsultan Keselamatan & Kesihatan Pekerjaan",
+        "Pegawai Keselamatan Tapak (Safety Officer)"
+      ],
+      "Teknologi & Inovasi": [
+        "Pegawai Teknologi Maklumat (IT)",
+        "Konsultan Teknologi Digital / Sistem"
+      ],
+      "Pertanian & Industri Asas Tani": [
+        "Pegawai Pertanian",
+        "Pegawai Perladangan",
+        "Doktor Veterinar"
+      ],
+      "Insurans & Takaful": [
+        "Perunding Insurans Hayat",
+        "Perunding Insurans Am",
+        "Perunding Takaful Keluarga & Takaful Am"
+      ]
+    };
 
     Papa.parse(sheetURL, {
       download: true,
       header: true,
       complete: function(results) {
         allData = results.data;
-        bidangList = extractBidangColumns(results.meta.fields);
-        populateBidangDropdown(bidangList);
+        populateBidangDropdown();
         renderCards(allData);
       }
     });
 
-    function extractBidangColumns(headers) {
-      const exclude = ["Nama penghuni", "Nama syarikat", "Nombor telefon syarikat", "Jawatan di dalam syarikat", "Kebenaran untuk berkongsi maklumat jawatan", "Butiran perkhidmatan yang ditawarkan", "Gambar kad (Business card)", "Status"];
-      return headers.filter(h => !exclude.includes(h));
-    }
-
-    function populateBidangDropdown(bidangList) {
+    function populateBidangDropdown() {
       const bidangDropdown = document.getElementById('filterBidang');
-      bidangList.forEach(bidang => {
+      Object.keys(bidangTetap).forEach(bidang => {
         const option = document.createElement('option');
         option.value = bidang;
         option.textContent = bidang;
@@ -91,19 +132,14 @@
     function populateSubBidangDropdown(selectedBidang) {
       const subDropdown = document.getElementById('filterSubBidang');
       subDropdown.innerHTML = '<option value="">Tapis ikut sub-bidang...</option>';
-      const subSet = new Set();
-
-      allData.forEach(row => {
-        const val = row[selectedBidang];
-        if (val) subSet.add(val);
-      });
-
-      subSet.forEach(sub => {
-        const option = document.createElement('option');
-        option.value = sub;
-        option.textContent = sub;
-        subDropdown.appendChild(option);
-      });
+      if (bidangTetap[selectedBidang]) {
+        bidangTetap[selectedBidang].forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub;
+          option.textContent = sub;
+          subDropdown.appendChild(option);
+        });
+      }
     }
 
     function applyFilters() {
@@ -113,16 +149,16 @@
       let filtered = allData;
 
       if (bidang) {
-        filtered = filtered.filter(row => row[bidang]);
+        filtered = filtered.filter(row => row["Bidang"] === bidang);
       }
-      if (bidang && subBidang) {
-        filtered = filtered.filter(row => row[bidang] === subBidang);
+      if (subBidang) {
+        filtered = filtered.filter(row => row["Sub-bidang"] === subBidang);
       }
 
-      renderCards(filtered, bidang);
+      renderCards(filtered);
     }
 
-    function renderCards(data, bidangDipilih = null) {
+    function renderCards(data) {
       const container = document.getElementById('cards');
       container.innerHTML = '';
       data.forEach(row => {
@@ -144,16 +180,13 @@
 
           const body = document.createElement('div');
           body.className = 'card-body';
-
-          const bidangLabel = bidangDipilih || bidangList.find(b => row[b]);
-
           body.innerHTML = `
             <h5 class="card-title">${row["Nama penghuni"] || 'Tanpa Nama'}</h5>
             <p class="card-text"><strong>Nama Syarikat:</strong> ${row["Nama syarikat"] || '-'}</p>
             <p class="card-text"><strong>Telefon Syarikat:</strong> ${row["Nombor telefon syarikat"] || '-'}</p>
             ${row["Kebenaran untuk berkongsi maklumat jawatan"]?.toLowerCase().includes("ya") && row["Jawatan di dalam syarikat"] ? `<p class="card-text"><strong>Jawatan:</strong> ${row["Jawatan di dalam syarikat"]}</p>` : ''}
-            <p class="card-text"><strong>Bidang:</strong> ${bidangLabel}</p>
-            <p class="card-text"><strong>Sub-bidang:</strong> ${row[bidangLabel] || '-'}</p>
+            <p class="card-text"><strong>Bidang:</strong> ${row["Bidang"] || '-'}</p>
+            <p class="card-text"><strong>Sub-bidang:</strong> ${row["Sub-bidang"] || '-'}</p>
             <p class="card-text"><strong>Perkhidmatan:</strong> ${row["Butiran perkhidmatan yang ditawarkan"] || '-'}</p>
           `;
           card.appendChild(body);
