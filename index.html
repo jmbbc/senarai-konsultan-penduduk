@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Direktori Perkhidmatan Penduduk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    #filterBidang {
+      margin: 10px auto 20px;
+      display: block;
+      padding: 8px;
+      font-size: 16px;
+      max-width: 400px;
+      width: 100%;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px auto;
+      max-width: 500px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .card img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .card p {
+      margin: 5px 0;
+    }
+
+    /* Responsif untuk skrin kecil */
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 22px;
+      }
+      #filterBidang {
+        font-size: 14px;
+      }
+      .card {
+        padding: 12px;
+        margin: 10px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Senarai Perkhidmatan Penduduk</h1>
+  <select id="filterBidang">
+    <option value="">Tapis ikut bidang...</option>
+  </select>
+  <div id="cards"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <script>
+    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?output=csv';
+    let allData = [];
+
+    Papa.parse(sheetURL, {
+      download: true,
+      header: true,
+      complete: function(results) {
+        allData = results.data;
+        populateDropdown(allData);
+        renderCards(allData);
+      }
+    });
+
+    function populateDropdown(data) {
+      const bidangSet = new Set();
+      data.forEach(row => {
+        if (row["Bidang profesional berkaitan syarikat"]) {
+          bidangSet.add(row["Bidang profesional berkaitan syarikat"]);
+        }
+      });
+      const dropdown = document.getElementById('filterBidang');
+      bidangSet.forEach(bidang => {
+        const option = document.createElement('option');
+        option.value = bidang;
+        option.textContent = bidang;
+        dropdown.appendChild(option);
+      });
+
+      dropdown.addEventListener('change', function() {
+        const selected = this.value;
+        const filtered = selected ? allData.filter(row => row["Bidang profesional berkaitan syarikat"] === selected) : allData;
+        renderCards(filtered);
+      });
+    }
+
+    function renderCards(data) {
+      const container = document.getElementById('cards');
+      container.innerHTML = '';
+      data.forEach(row => {
+        const showJawatan = row["Kebenaran untuk berkongsi maklumat jawatan"]?.toLowerCase().includes("ya");
+        const bidang = row["Bidang profesional berkaitan syarikat"];
+        const subBidang = row["Sub-bidang"] || "-";
+        const status = row["Status"]?.toLowerCase();
+
+        if (status === "approved" || !status) {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h3>${row["Nama penghuni"] || 'Tanpa Nama'}</h3>
+            <p><strong>Nama Syarikat:</strong> ${row["Nama syarikat"] || '-'}</p>
+            <p><strong>Telefon Syarikat:</strong> ${row["Nombor telefon syarikat"] || '-'}</p>
+            ${showJawatan && row["Jawatan di dalam syarikat"] ? `<p><strong>Jawatan:</strong> ${row["Jawatan di dalam syarikat"]}</p>` : ''}
+            <p><strong>Bidang:</strong> ${bidang}</p>
+            <p><strong>Sub-bidang:</strong> ${subBidang}</p>
+            <p><strong>Perkhidmatan:</strong> ${row["Butiran perkhidmatan yang ditawarkan"] || '-'}</p>
+            ${row["Gambar kad (Business card)"] ? `<img src="${row["Gambar kad (Business card)"]}" alt="Kad Bisnes">` : ''}
+          `;
+          container.appendChild(card);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
