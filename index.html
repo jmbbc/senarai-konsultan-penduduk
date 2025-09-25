@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Direktori Perkhidmatan Penduduk</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Import Bootstrap CSS -->
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
@@ -26,7 +26,7 @@
     }
     .filter-select {
       max-width: 400px;
-      margin: 0 auto 30px;
+      margin: 0 auto 20px;
     }
   </style>
 </head>
@@ -34,10 +34,17 @@
   <div class="container py-4">
     <h1 class="text-center mb-4">Senarai Perkhidmatan Penduduk</h1>
 
-    <div class="mb-4 filter-select">
-      <select id="filterBidang" class="form-select form-select-lg">
-        <option value="">Tapis ikut bidang...</option>
-      </select>
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-5 filter-select">
+        <select id="filterBidang" class="form-select form-select-lg">
+          <option value="">Tapis ikut bidang...</option>
+        </select>
+      </div>
+      <div class="col-md-5 filter-select">
+        <select id="filterSubBidang" class="form-select form-select-lg">
+          <option value="">Tapis ikut sub-bidang...</option>
+        </select>
+      </div>
     </div>
 
     <div id="cards" class="row gy-4"></div>
@@ -53,31 +60,58 @@
       header: true,
       complete: function(results) {
         allData = results.data;
-        populateDropdown(allData);
+        populateDropdowns(allData);
         renderCards(allData);
       }
     });
 
-    function populateDropdown(data) {
+    function populateDropdowns(data) {
       const bidangSet = new Set();
+      const subBidangSet = new Set();
+
       data.forEach(row => {
         if (row["Bidang profesional berkaitan syarikat"]) {
           bidangSet.add(row["Bidang profesional berkaitan syarikat"]);
         }
+        if (row["Sub bidang (jika berkaitan)"]) {
+          subBidangSet.add(row["Sub bidang (jika berkaitan)"]);
+        }
       });
-      const dropdown = document.getElementById('filterBidang');
+
+      const bidangDropdown = document.getElementById('filterBidang');
       bidangSet.forEach(bidang => {
         const option = document.createElement('option');
         option.value = bidang;
         option.textContent = bidang;
-        dropdown.appendChild(option);
+        bidangDropdown.appendChild(option);
       });
 
-      dropdown.addEventListener('change', function() {
-        const selected = this.value;
-        const filtered = selected ? allData.filter(row => row["Bidang profesional berkaitan syarikat"] === selected) : allData;
-        renderCards(filtered);
+      const subDropdown = document.getElementById('filterSubBidang');
+      subBidangSet.forEach(sub => {
+        const option = document.createElement('option');
+        option.value = sub;
+        option.textContent = sub;
+        subDropdown.appendChild(option);
       });
+
+      bidangDropdown.addEventListener('change', applyFilters);
+      subDropdown.addEventListener('change', applyFilters);
+    }
+
+    function applyFilters() {
+      const bidang = document.getElementById('filterBidang').value;
+      const subBidang = document.getElementById('filterSubBidang').value;
+
+      let filtered = allData;
+
+      if (bidang) {
+        filtered = filtered.filter(row => row["Bidang profesional berkaitan syarikat"] === bidang);
+      }
+      if (subBidang) {
+        filtered = filtered.filter(row => row["Sub bidang (jika berkaitan)"] === subBidang);
+      }
+
+      renderCards(filtered);
     }
 
     function renderCards(data) {
@@ -86,7 +120,7 @@
       data.forEach(row => {
         const showJawatan = row["Kebenaran untuk berkongsi maklumat jawatan"]?.toLowerCase().includes("ya");
         const bidang = row["Bidang profesional berkaitan syarikat"];
-        const subBidang = row["Sub-bidang"] || "-";
+        const subBidang = row["Sub bidang (jika berkaitan)"] || "-";
         const status = row["Status"]?.toLowerCase();
 
         if (status === "approved" || !status) {
