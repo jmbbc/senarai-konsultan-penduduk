@@ -33,20 +33,29 @@
         console.log("CSV Results (mentah):", results);
 
         const data = results.data;
-        console.log("Data array:", data);
-
         let html = "";
 
         data.forEach((row, index) => {
+          // Debug setiap row
           console.log("Row " + index, row);
-          console.log("Pic Kad value:", row["Pic Kad"]);
 
-          // Hanya papar kalau ada isi sekurang-kurangnya satu kolum penting
-          if (row["Nama Syarikat"] || row["Nama"] || row["Pic Kad"]) {
-            const imgSrc = row["Pic Kad"] && row["Pic Kad"].trim() !== "" 
-                           ? row["Pic Kad"].trim() 
-                           : null;
+          const rawLink = row["Pic Kad"] ? row["Pic Kad"].trim() : "";
+          let imgSrc = "";
 
+          if (rawLink.includes("drive.google.com")) {
+            // Extract File ID dari link Google Drive
+            const match = rawLink.match(/[-\w]{25,}/);
+            if (match) {
+              imgSrc = `https://drive.google.com/uc?export=view&id=${match[0]}`;
+            }
+          } else {
+            imgSrc = rawLink;
+          }
+
+          // Debug link gambar yang diproses
+          console.log("Gambar link:", imgSrc);
+
+          if (row["Nama Syarikat"] || row["Nama"] || imgSrc) {
             let card = `
               <div class="card">
                 <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || "– Tiada maklumat –"}</p>
@@ -56,7 +65,7 @@
                 <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
                 <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
                 <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
-                ${imgSrc ? `<img src="${imgSrc}" alt="Kad ${row["Nama Syarikat"] || "Tanpa Nama"}">` : ""}
+                ${imgSrc ? `<img src="${imgSrc}" alt="Pic Kad ${row["Nama Syarikat"] || "Tanpa Nama"}">` : ""}
               </div>
             `;
             html += card;
