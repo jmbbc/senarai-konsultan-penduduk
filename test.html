@@ -4,9 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Senarai Perkhidmatan Penduduk</title>
+  <!-- Import Google Font Tenorite -->
+  <link href="https://fonts.googleapis.com/css2?family=Tenorite&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#1a1a1a; }
-    h1 { text-align:center; padding:20px; background:#0078D7; color:white; margin:0; }
+    body { font-family: 'Tenorite', sans-serif; margin:0; padding:0; background:#1a1a1a; }
+    h1 { 
+      text-align:center; 
+      padding:20px; 
+      background:#243137; /* gelap selaras dengan kad */
+      color:#bd9f67;       /* teks emas */
+      margin:0; 
+      font-family: 'Tenorite', sans-serif;
+      font-weight:600;
+      letter-spacing:1px;
+    }
     .container { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; gap:20px; }
 
     /* Kad gaya Uiverse adaptasi */
@@ -66,7 +77,6 @@
         let html = "";
 
         data.forEach((row) => {
-          // Normalisasi key → lowercase + trim
           const normalized = {};
           for (let key in row) {
             if (row.hasOwnProperty(key)) {
@@ -83,7 +93,6 @@
           const butiran = normalized["butiran perkhidmatan"];
           const picKad = normalized["pic kad"];
 
-          // ❗ Skip kalau tiada "Nama"
           if (!nama) return;
 
           let card = `
