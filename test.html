@@ -23,35 +23,34 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    // Link CSV dari Google Sheet (Final)
+    // Link CSV dari Google Sheet
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
 
     Papa.parse(csvUrl, {
       download: true,
-      header: true, // baca header automatik
+      header: true,
       complete: function(results) {
         const data = results.data;
         let html = "";
 
         data.forEach((row, index) => {
-          // Debug: log setiap row untuk semak
           console.log("Row " + index, row);
           console.log("Pic Kad value:", row["Pic Kad"]);
 
-          if (row["Nama Syarikat"]) {
-            html += `
-              <div class="card">
-                <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Nama:</span> ${row["Nama"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Nombor Telefon Syarikat:</span> ${row["Nombor Telefon Syarikat"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Status dalam Syarikat:</span> ${row["Status dalam Syarikat"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
-                ${row["Pic Kad"] ? `<img src="${row["Pic Kad"].trim()}" alt="Kad ${row["Nama Syarikat"]}">` : ""}
-              </div>
-            `;
-          }
+          // Bina kad untuk setiap baris, walaupun Nama Syarikat kosong
+          let card = `
+            <div class="card">
+              <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || "– Tiada maklumat –"}</p>
+              <p><span class="label">Nama:</span> ${row["Nama"] || "– Tiada maklumat –"}</p>
+              <p><span class="label">Nombor Telefon Syarikat:</span> ${row["Nombor Telefon Syarikat"] || "– Tiada maklumat –"}</p>
+              <p><span class="label">Status dalam Syarikat:</span> ${row["Status dalam Syarikat"] || "– Tiada maklumat –"}</p>
+              <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
+              <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
+              <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
+              ${row["Pic Kad"] ? `<img src="${row["Pic Kad"].trim()}" alt="Kad ${row["Nama Syarikat"] || "Tanpa Nama"}">` : ""}
+            </div>
+          `;
+          html += card;
         });
 
         document.getElementById("directory").innerHTML = html;
