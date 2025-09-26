@@ -10,9 +10,10 @@
     .container { display:flex; flex-wrap:wrap; justify-content:center; padding:10px; }
     .card { background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
             margin:10px; padding:15px; width:300px; box-sizing:border-box; }
-    .card img { max-width:100%; border-radius:6px; margin-top:10px; }
     .card p { margin:5px 0; font-size:14px; }
     .label { font-weight:bold; color:#333; }
+    .card a { color:#0078D7; text-decoration:none; }
+    .card a:hover { text-decoration:underline; }
   </style>
 </head>
 <body>
@@ -33,7 +34,7 @@
         const data = results.data;
         let html = "";
 
-        data.forEach((row, index) => {
+        data.forEach((row) => {
           // Normalisasi key → lowercase + trim
           const normalized = {};
           for (let key in row) {
@@ -49,7 +50,7 @@
           const bidang = normalized["bidang"];
           const subBidang = normalized["sub-bidang"];
           const butiran = normalized["butiran perkhidmatan"];
-          const imgSrc = normalized["pic kad"];
+          const picKad = normalized["pic kad"];
 
           // ❗ Skip terus kalau tiada "Nama"
           if (!nama) {
@@ -65,7 +66,7 @@
               ${bidang ? `<p><span class="label">Bidang:</span> ${bidang}</p>` : ""}
               ${subBidang ? `<p><span class="label">Sub-bidang:</span> ${subBidang}</p>` : ""}
               ${butiran ? `<p><span class="label">Butiran Perkhidmatan:</span> ${butiran}</p>` : ""}
-              ${imgSrc ? `<img src="${imgSrc}" alt="Kad ${namaSyarikat || nama}" loading="lazy">` : ""}
+              ${picKad ? `<p><span class="label">Kad:</span> <a href="${picKad}" target="_blank">Lihat Kad</a></p>` : ""}
             </div>
           `;
           html += card;
