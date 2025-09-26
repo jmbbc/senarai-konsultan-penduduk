@@ -29,34 +29,43 @@
       download: true,
       header: true,
       complete: function(results) {
+        console.log("Header keys:", Object.keys(results.data[0] || {}));
         const data = results.data;
         let html = "";
 
-        data.forEach((row) => {
-          const namaSyarikat = row["Nama Syarikat"]?.trim();
-          const nama = row["Nama"]?.trim();
-          const telefon = row["Nombor Telefon Syarikat"]?.trim();
-          const status = row["Status dalam Syarikat"]?.trim();
-          const bidang = row["Bidang"]?.trim();
-          const subBidang = row["Sub-bidang"]?.trim();
-          const butiran = row["Butiran Perkhidmatan"]?.trim();
-          const imgSrc = row["Pic Kad"]?.trim();
+        data.forEach((row, index) => {
+          // Normalisasi key → lowercase + trim
+          const normalized = {};
+          for (let key in row) {
+            if (row.hasOwnProperty(key)) {
+              normalized[key.trim().toLowerCase()] = row[key]?.trim();
+            }
+          }
 
-          // Skip kad jika semua field kosong
-          if (!(namaSyarikat || nama || telefon || status || bidang || subBidang || butiran || imgSrc)) {
+          const namaSyarikat = normalized["nama syarikat"];
+          const nama = normalized["nama"];
+          const telefon = normalized["nombor telefon syarikat"];
+          const status = normalized["status dalam syarikat"];
+          const bidang = normalized["bidang"];
+          const subBidang = normalized["sub-bidang"];
+          const butiran = normalized["butiran perkhidmatan"];
+          const imgSrc = normalized["pic kad"];
+
+          // ❗ Skip terus kalau tiada "Nama"
+          if (!nama) {
             return;
           }
 
           let card = `
             <div class="card">
               ${namaSyarikat ? `<p><span class="label">Nama Syarikat:</span> ${namaSyarikat}</p>` : ""}
-              ${nama ? `<p><span class="label">Nama:</span> ${nama}</p>` : ""}
+              <p><span class="label">Nama:</span> ${nama}</p>
               ${telefon ? `<p><span class="label">Nombor Telefon Syarikat:</span> ${telefon}</p>` : ""}
               ${status ? `<p><span class="label">Status dalam Syarikat:</span> ${status}</p>` : ""}
               ${bidang ? `<p><span class="label">Bidang:</span> ${bidang}</p>` : ""}
               ${subBidang ? `<p><span class="label">Sub-bidang:</span> ${subBidang}</p>` : ""}
               ${butiran ? `<p><span class="label">Butiran Perkhidmatan:</span> ${butiran}</p>` : ""}
-              ${imgSrc ? `<img src="${imgSrc}" alt="Kad ${namaSyarikat || nama || "Penduduk"}" loading="lazy">` : ""}
+              ${imgSrc ? `<img src="${imgSrc}" alt="Kad ${namaSyarikat || nama}" loading="lazy">` : ""}
             </div>
           `;
           html += card;
