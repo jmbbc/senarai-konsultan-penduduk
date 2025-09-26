@@ -1,87 +1,92 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Senarai Perkhidmatan Penduduk</title>
+  <title>Papar Data + Gambar</title>
   <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; }
-    h1 { text-align:center; padding:20px; background:#0078D7; color:white; margin:0; }
-    .container { display:flex; flex-wrap:wrap; justify-content:center; padding:10px; }
-    .card { background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
-            margin:10px; padding:15px; width:300px; box-sizing:border-box; }
-    .card img { 
-      max-width:100%; 
-      max-height:200px;   /* Tinggi maksimum gambar */
-      object-fit:contain; /* Elak herot gambar */
-      border-radius:6px; 
-      margin-top:10px; 
-      display:block; 
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f4f9;
     }
-    .card p { margin:5px 0; font-size:14px; }
-    .label { font-weight:bold; color:#333; }
+    #cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 15px;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      object-fit: contain; /* elak gambar pecah */
+    }
+    .card h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+    .card p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #333;
+    }
   </style>
 </head>
 <body>
-  <h1>Senarai Perkhidmatan Penduduk</h1>
-  <div class="container" id="directory"></div>
-
-  <!-- PapaParse CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <h1>Senarai Kad</h1>
+  <div id="cards">Loading data...</div>
 
   <script>
-    // Link CSV dari Google Sheet
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
 
-    Papa.parse(csvUrl, {
-      download: true,
-      header: true,
-      complete: function(results) {
-        console.log("CSV Results (mentah):", results);
+    async function loadData() {
+      try {
+        const response = await fetch(sheetUrl);
+        const data = await response.text();
+        const rows = Papa.parse(data, { header: true }).data;
 
-        const data = results.data;
-        let html = "";
+        const container = document.getElementById("cards");
+        container.innerHTML = "";
 
-        data.forEach((row, index) => {
-          const rawLink = row["Pic Kad"] ? row["Pic Kad"].trim() : "";
-          let imgSrc = "";
+        rows.forEach((row, index) => {
+          const imgSrc = row["Pic Kad"] ? row["Pic Kad"].trim() : "";
+          console.log("Row", index, "Image:", imgSrc); // 🔎 Debug link gambar
 
-          if (rawLink.includes("drive.google.com")) {
-            // Extract File ID dari link Google Drive
-            const match = rawLink.match(/[-\w]{25,}/);
-            if (match) {
-              imgSrc = `https://drive.google.com/uc?export=view&id=${match[0]}`;
-            }
-          } else {
-            imgSrc = rawLink;
-          }
+          const card = document.createElement("div");
+          card.className = "card";
 
-          console.log("Gambar link:", imgSrc);
-
-          if (row["Nama Syarikat"] || row["Nama"] || imgSrc) {
-            let card = `
-              <div class="card">
-                <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Nama:</span> ${row["Nama"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Nombor Telefon Syarikat:</span> ${row["Nombor Telefon Syarikat"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Status dalam Syarikat:</span> ${row["Status dalam Syarikat"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
-                <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
-                ${imgSrc ? `<img src="${imgSrc}" alt="Kad ${row["Nama Syarikat"] || "Tanpa Nama"}" loading="lazy">` : ""}
-              </div>
-            `;
-            html += card;
-          }
+          card.innerHTML = `
+            ${imgSrc ? `<img src="${imgSrc}" 
+                               alt="Kad ${row["Nama Syarikat"] || "Tanpa Nama"}" 
+                               loading="lazy">` : ""}
+            <h3>${row["Nama Syarikat"] || "Tanpa Nama"}</h3>
+            <p><strong>Bidang:</strong> ${row["Bidang"] || "-"}</p>
+            <p><strong>Sub Bidang:</strong> ${row["Sub Bidang"] || "-"}</p>
+          `;
+          container.appendChild(card);
         });
-
-        document.getElementById("directory").innerHTML = html;
-      },
-      error: function(err) {
-        console.error("PapaParse error:", err);
-        alert("Gagal baca CSV. Sila semak link CSV.");
+      } catch (err) {
+        console.error("Error loading sheet:", err);
+        document.getElementById("cards").innerHTML = "Gagal muatkan data.";
       }
-    });
+    }
+
+    // load papaparse
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js";
+    script.onload = loadData;
+    document.body.appendChild(script);
   </script>
 </body>
 </html>
