@@ -10,7 +10,14 @@
     .container { display:flex; flex-wrap:wrap; justify-content:center; padding:10px; }
     .card { background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
             margin:10px; padding:15px; width:300px; box-sizing:border-box; }
-    .card img { max-width:100%; border-radius:6px; margin-top:10px; }
+    .card img { 
+      max-width:100%; 
+      max-height:200px;   /* Tinggi maksimum gambar */
+      object-fit:contain; /* Elak herot gambar */
+      border-radius:6px; 
+      margin-top:10px; 
+      display:block; 
+    }
     .card p { margin:5px 0; font-size:14px; }
     .label { font-weight:bold; color:#333; }
   </style>
@@ -36,9 +43,6 @@
         let html = "";
 
         data.forEach((row, index) => {
-          // Debug setiap row
-          console.log("Row " + index, row);
-
           const rawLink = row["Pic Kad"] ? row["Pic Kad"].trim() : "";
           let imgSrc = "";
 
@@ -52,7 +56,6 @@
             imgSrc = rawLink;
           }
 
-          // Debug link gambar yang diproses
           console.log("Gambar link:", imgSrc);
 
           if (row["Nama Syarikat"] || row["Nama"] || imgSrc) {
@@ -65,7 +68,7 @@
                 <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
                 <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
                 <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
-                ${imgSrc ? `<img src="${imgSrc}" alt="Pic Kad ${row["Nama Syarikat"] || "Tanpa Nama"}">` : ""}
+                ${imgSrc ? `<img src="${imgSrc}" alt="Kad ${row["Nama Syarikat"] || "Tanpa Nama"}" loading="lazy">` : ""}
               </div>
             `;
             html += card;
