@@ -26,9 +26,6 @@
     // Link CSV dari Google Sheet
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
 
-    // Link fallback image (contoh: ikon placeholder)
-    const fallbackImg = "https://via.placeholder.com/300x180.png?text=Tiada+Gambar";
-
     Papa.parse(csvUrl, {
       download: true,
       header: true,
@@ -37,27 +34,26 @@
         let html = "";
 
         data.forEach((row, index) => {
-          console.log("Row " + index, row);
-          console.log("Pic Kad value:", row["Pic Kad"]);
+          // Hanya papar kalau ada isi sekurang-kurangnya satu kolum penting
+          if (row["Nama Syarikat"] || row["Nama"] || row["Pic Kad"]) {
+            const imgSrc = row["Pic Kad"] && row["Pic Kad"].trim() !== "" 
+                           ? row["Pic Kad"].trim() 
+                           : null;
 
-          // Guna link Pic Kad kalau ada, kalau kosong guna fallback
-          const imgSrc = row["Pic Kad"] && row["Pic Kad"].trim() !== "" 
-                         ? row["Pic Kad"].trim() 
-                         : fallbackImg;
-
-          let card = `
-            <div class="card">
-              <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || "– Tiada maklumat –"}</p>
-              <p><span class="label">Nama:</span> ${row["Nama"] || "– Tiada maklumat –"}</p>
-              <p><span class="label">Nombor Telefon Syarikat:</span> ${row["Nombor Telefon Syarikat"] || "– Tiada maklumat –"}</p>
-              <p><span class="label">Status dalam Syarikat:</span> ${row["Status dalam Syarikat"] || "– Tiada maklumat –"}</p>
-              <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
-              <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
-              <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
-              <img src="${imgSrc}" alt="Kad ${row["Nama Syarikat"] || "Tanpa Nama"}">
-            </div>
-          `;
-          html += card;
+            let card = `
+              <div class="card">
+                <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Nama:</span> ${row["Nama"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Nombor Telefon Syarikat:</span> ${row["Nombor Telefon Syarikat"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Status dalam Syarikat:</span> ${row["Status dalam Syarikat"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
+                ${imgSrc ? `<img src="${imgSrc}" alt="Kad ${row["Nama Syarikat"] || "Tanpa Nama"}">` : ""}
+              </div>
+            `;
+            html += card;
+          }
         });
 
         document.getElementById("directory").innerHTML = html;
