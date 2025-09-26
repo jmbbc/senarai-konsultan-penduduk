@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Senarai Perkhidmatan Penduduk</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; }
+    h1 { text-align:center; padding:20px; background:#0078D7; color:white; margin:0; }
+    .container { display:flex; flex-wrap:wrap; justify-content:center; padding:10px; }
+    .card { background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+            margin:10px; padding:15px; width:300px; box-sizing:border-box; }
+    .card img { max-width:100%; border-radius:6px; margin-top:10px; }
+    .card p { margin:5px 0; font-size:14px; }
+    .label { font-weight:bold; color:#333; }
+  </style>
+</head>
+<body>
+  <h1>Senarai Perkhidmatan Penduduk</h1>
+  <div class="container" id="directory"></div>
+
+  <!-- PapaParse CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <script>
+    // Link CSV dari Google Sheet (Final)
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
+
+    Papa.parse(csvUrl, {
+      download: true,
+      header: true, // baca header automatik
+      complete: function(results) {
+        const data = results.data;
+        let html = "";
+        data.forEach(row => {
+          if (row["Nama Syarikat"]) {
+            html += `
+              <div class="card">
+                <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || ""}</p>
+                <p><span class="label">Nama:</span> ${row["Nama"] || ""}</p>
+                <p><span class="label">Nombor Telefon Syarikat:</span> ${row["Nombor Telefon Syarikat"] || ""}</p>
+                <p><span class="label">Status dalam Syarikat:</span> ${row["Status dalam Syarikat"] || ""}</p>
+                <p><span class="label">Bidang:</span> ${row["Bidang"] || ""}</p>
+                <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || ""}</p>
+                <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || ""}</p>
+                ${row["Gambar Kad"] ? `<img src="${row["Gambar Kad"]}" alt="Kad ${row["Nama Syarikat"]}">` : ""}
+              </div>
+            `;
+          }
+        });
+        document.getElementById("directory").innerHTML = html;
+      }
+    });
+  </script>
+</body>
+</html>
