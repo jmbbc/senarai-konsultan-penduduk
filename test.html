@@ -36,13 +36,13 @@
           if (row["Nama Syarikat"]) {
             html += `
               <div class="card">
-                <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || ""}</p>
-                <p><span class="label">Nama:</span> ${row["Nama"] || ""}</p>
-                <p><span class="label">Nombor Telefon Syarikat:</span> ${row["Nombor Telefon Syarikat"] || ""}</p>
-                <p><span class="label">Status dalam Syarikat:</span> ${row["Status dalam Syarikat"] || ""}</p>
-                <p><span class="label">Bidang:</span> ${row["Bidang"] || ""}</p>
-                <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || ""}</p>
-                <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || ""}</p>
+                <p><span class="label">Nama Syarikat:</span> ${row["Nama Syarikat"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Nama:</span> ${row["Nama"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Nombor Telefon Syarikat:</span> ${row["Nombor Telefon Syarikat"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Status dalam Syarikat:</span> ${row["Status dalam Syarikat"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
+                <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
                 ${row["Gambar Kad"] ? `<img src="${row["Gambar Kad"]}" alt="Kad ${row["Nama Syarikat"]}">` : ""}
               </div>
             `;
