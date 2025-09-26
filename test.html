@@ -32,7 +32,12 @@
       complete: function(results) {
         const data = results.data;
         let html = "";
-        data.forEach(row => {
+
+        data.forEach((row, index) => {
+          // Debug: log setiap row untuk semak
+          console.log("Row " + index, row);
+          console.log("Pic Kad value:", row["Pic Kad"]);
+
           if (row["Nama Syarikat"]) {
             html += `
               <div class="card">
@@ -43,11 +48,12 @@
                 <p><span class="label">Bidang:</span> ${row["Bidang"] || "– Tiada maklumat –"}</p>
                 <p><span class="label">Sub-bidang:</span> ${row["Sub-bidang"] || "– Tiada maklumat –"}</p>
                 <p><span class="label">Butiran Perkhidmatan:</span> ${row["Butiran Perkhidmatan"] || "– Tiada maklumat –"}</p>
-                ${row["Pic Kad"] ? `<img src="${row["Pic Kad"]}" alt="Kad ${row["Nama Syarikat"]}">` : ""}
+                ${row["Pic Kad"] ? `<img src="${row["Pic Kad"].trim()}" alt="Kad ${row["Nama Syarikat"]}">` : ""}
               </div>
             `;
           }
         });
+
         document.getElementById("directory").innerHTML = html;
       }
     });
