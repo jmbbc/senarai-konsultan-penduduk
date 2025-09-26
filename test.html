@@ -1,92 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Papar Data + Gambar</title>
+  <title>Senarai Perkhidmatan Penduduk</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f4f4f9;
-    }
-    #cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 15px;
-      transition: transform 0.2s ease;
-    }
-    .card:hover {
-      transform: scale(1.02);
-    }
-    .card img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      object-fit: contain; /* elak gambar pecah */
-    }
-    .card h3 {
-      margin: 0 0 8px 0;
-      font-size: 18px;
-    }
-    .card p {
-      margin: 4px 0;
-      font-size: 14px;
-      color: #333;
-    }
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; }
+    h1 { text-align:center; padding:20px; background:#0078D7; color:white; margin:0; }
+    .container { display:flex; flex-wrap:wrap; justify-content:center; padding:10px; }
+    .card { background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+            margin:10px; padding:15px; width:300px; box-sizing:border-box; }
+    .card img { max-width:100%; border-radius:6px; margin-top:10px; }
+    .card p { margin:5px 0; font-size:14px; }
+    .label { font-weight:bold; color:#333; }
   </style>
 </head>
 <body>
-  <h1>Senarai Kad</h1>
-  <div id="cards">Loading data...</div>
+  <h1>Senarai Perkhidmatan Penduduk</h1>
+  <div class="container" id="directory"></div>
+
+  <!-- PapaParse CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
 
-    async function loadData() {
-      try {
-        const response = await fetch(sheetUrl);
-        const data = await response.text();
-        const rows = Papa.parse(data, { header: true }).data;
+    Papa.parse(csvUrl, {
+      download: true,
+      header: true,
+      complete: function(results) {
+        const data = results.data;
+        let html = "";
 
-        const container = document.getElementById("cards");
-        container.innerHTML = "";
+        data.forEach((row) => {
+          const namaSyarikat = row["Nama Syarikat"]?.trim();
+          const nama = row["Nama"]?.trim();
+          const telefon = row["Nombor Telefon Syarikat"]?.trim();
+          const status = row["Status dalam Syarikat"]?.trim();
+          const bidang = row["Bidang"]?.trim();
+          const subBidang = row["Sub-bidang"]?.trim();
+          const butiran = row["Butiran Perkhidmatan"]?.trim();
+          const imgSrc = row["Pic Kad"]?.trim();
 
-        rows.forEach((row, index) => {
-          const imgSrc = row["Pic Kad"] ? row["Pic Kad"].trim() : "";
-          console.log("Row", index, "Image:", imgSrc); // 🔎 Debug link gambar
+          // Skip kad jika semua field kosong
+          if (!(namaSyarikat || nama || telefon || status || bidang || subBidang || butiran || imgSrc)) {
+            return;
+          }
 
-          const card = document.createElement("div");
-          card.className = "card";
-
-          card.innerHTML = `
-            ${imgSrc ? `<img src="${imgSrc}" 
-                               alt="Kad ${row["Nama Syarikat"] || "Tanpa Nama"}" 
-                               loading="lazy">` : ""}
-            <h3>${row["Nama Syarikat"] || "Tanpa Nama"}</h3>
-            <p><strong>Bidang:</strong> ${row["Bidang"] || "-"}</p>
-            <p><strong>Sub Bidang:</strong> ${row["Sub Bidang"] || "-"}</p>
+          let card = `
+            <div class="card">
+              ${namaSyarikat ? `<p><span class="label">Nama Syarikat:</span> ${namaSyarikat}</p>` : ""}
+              ${nama ? `<p><span class="label">Nama:</span> ${nama}</p>` : ""}
+              ${telefon ? `<p><span class="label">Nombor Telefon Syarikat:</span> ${telefon}</p>` : ""}
+              ${status ? `<p><span class="label">Status dalam Syarikat:</span> ${status}</p>` : ""}
+              ${bidang ? `<p><span class="label">Bidang:</span> ${bidang}</p>` : ""}
+              ${subBidang ? `<p><span class="label">Sub-bidang:</span> ${subBidang}</p>` : ""}
+              ${butiran ? `<p><span class="label">Butiran Perkhidmatan:</span> ${butiran}</p>` : ""}
+              ${imgSrc ? `<img src="${imgSrc}" alt="Kad ${namaSyarikat || nama || "Penduduk"}" loading="lazy">` : ""}
+            </div>
           `;
-          container.appendChild(card);
+          html += card;
         });
-      } catch (err) {
-        console.error("Error loading sheet:", err);
-        document.getElementById("cards").innerHTML = "Gagal muatkan data.";
-      }
-    }
 
-    // load papaparse
-    const script = document.createElement("script");
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js";
-    script.onload = loadData;
-    document.body.appendChild(script);
+        document.getElementById("directory").innerHTML = html;
+      },
+      error: function(err) {
+        console.error("PapaParse error:", err);
+        alert("Gagal baca CSV. Sila semak link CSV.");
+      }
+    });
   </script>
 </body>
 </html>
