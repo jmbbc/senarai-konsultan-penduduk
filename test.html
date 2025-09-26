@@ -14,33 +14,27 @@
       background:#243137; 
       color:#bd9f67; 
       margin:0; 
-      font-family: 'Tenorite', sans-serif;
       font-weight:600;
       letter-spacing:1px;
     }
     .container { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; gap:20px; }
 
-    /* Kad gaya Uiverse adaptasi */
     .card {
       width: 300px;
       min-height: 220px;
       background: #243137;
-      position: relative;
       border-radius: 10px;
-      overflow: hidden;
       transition: all 0.5s ease-in-out;
       padding: 15px;
       color: #f0f0f0;
       box-sizing: border-box;
     }
     .card:hover {
-      border-radius: 0;
       transform: scale(1.05);
       box-shadow: 0 0 15px rgba(189,159,103,0.6);
     }
     .card p { margin:6px 0; font-size:14px; }
 
-    /* Nama syarikat lebih besar + warna emas */
     .company-name {
       font-size: 20px;
       font-weight: bold;
@@ -52,7 +46,6 @@
 
     .label { font-weight:bold; color:#bd9f67; }
 
-    /* Butang emas */
     .btn-link {
       display:inline-block;
       margin-top:8px;
@@ -98,11 +91,21 @@
           const namaSyarikat = normalized["nama syarikat"];
           const nama = normalized["nama"];
           const telefon = normalized["nombor telefon syarikat"];
-          const status = normalized["status dalam syarikat"];
           const bidang = normalized["bidang"];
           const subBidang = normalized["sub-bidang"];
           const butiran = normalized["butiran perkhidmatan"];
           const picKad = normalized["pic kad"];
+
+          // Kolum status sebenar
+          const status = normalized["status dalam syarikat"];
+          // Kolum kebenaran
+          const izin = normalized["kebenaran untuk berkongsi maklumat jawatan"];
+
+          // Tentukan paparan status
+          let statusDisplay = "-";
+          if (izin && izin.toLowerCase() === "benarkan") {
+            statusDisplay = status || "-";
+          }
 
           if (!nama) return;
 
@@ -111,7 +114,7 @@
               ${namaSyarikat ? `<div class="company-name">${namaSyarikat}</div>` : ""}
               <p><span class="label">Nama:</span> ${nama}</p>
               ${telefon ? `<p><span class="label">Telefon:</span> ${telefon}</p>` : ""}
-              ${status ? `<p><span class="label">Status:</span> ${status}</p>` : ""}
+              <p><span class="label">Status:</span> ${statusDisplay}</p>
               ${bidang ? `<p><span class="label">Bidang:</span> ${bidang}</p>` : ""}
               ${subBidang ? `<p><span class="label">Sub-bidang:</span> ${subBidang}</p>` : ""}
               ${butiran ? `<p><span class="label">Butiran:</span> ${butiran}</p>` : ""}
