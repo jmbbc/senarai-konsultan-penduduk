@@ -183,6 +183,20 @@ fetch(dataUrl)
     }).filter(card => card !== null);
 
     renderCards("Semua");
+    const bidangSet = new Set();
+allCards.forEach(card => {
+  if (card.bidang) {
+    bidangSet.add(card.bidang.trim());
+  }
+});
+
+const select = document.getElementById("bidangSelect");
+bidangSet.forEach(bidang => {
+  const option = document.createElement("option");
+  option.value = bidang;
+  option.textContent = bidang;
+  select.appendChild(option);
+});
   })
   .catch(error => console.error("Gagal muat data:", error));
 
