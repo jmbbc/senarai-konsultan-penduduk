@@ -108,7 +108,7 @@
   <h1>Senarai Perkhidmatan Penduduk</h1>
 
   <div class="intro">
-    <p><strong>Perkhidmatan Profesional Penduduk Banjaria Court</strong></p>
+    <p><strong>Makluman: Konsultan Profesional Penduduk Banjaria Court</strong></p>
     <p>Ramai dalam kalangan penduduk Banjaria Court memiliki kepakaran dalam pelbagai bidang profesional. Perkhidmatan mereka sering diperlukan oleh komuniti kita.</p>
     <p>Inisiatif ini bertujuan untuk memudahkan pertemuan awal dan rujukan tempatan, menjimatkan masa, serta memberi keyakinan bahawa individu yang disenaraikan adalah pemilik atau penghuni sah. Ia juga membantu mengelakkan penipuan dan menggalakkan semangat kejiranan melalui perkongsian kepakaran.</p>
   </div>
@@ -209,4 +209,32 @@
                 <p><span class="label">Nama:</span> ${nama}</p>
                 ${telefon ? `<p><span class="label">Telefon:</span> ${telefon}</p>` : ""}
                 <p><span class="label">Status:</span> ${statusDisplay}</p>
-                ${bidang ? `<p><span class="label">Bidang:</span> ${bidang
+                ${bidang ? `<p><span class="label">Bidang:</span> ${bidang}</p>` : ""}
+                ${subBidang ? `<p><span class="label">Sub-bidang:</span> ${subBidang}</p>` : ""}
+                ${butiran ? `<p><span class="
+                                ${butiran ? `<p><span class="label">Butiran:</span> ${butiran}</p>` : ""}
+                ${picKad ? `<a href="${picKad}" target="_blank" class="btn-link">Lihat Kad</a>` : ""}
+              </div>
+            `
+          };
+        }).filter(card => card !== null);
+
+        renderCards("Semua");
+      }
+    });
+
+    document.getElementById("bidangSelect").addEventListener("change", function() {
+      renderCards(this.value);
+    });
+
+    function renderCards(selectedBidang) {
+      const container = document.getElementById("directory");
+      container.innerHTML = "";
+      const filtered = selectedBidang === "Semua"
+        ? allCards
+        : allCards.filter(card => card.bidang?.toLowerCase() === selectedBidang.toLowerCase());
+      filtered.forEach(card => container.innerHTML += card.html);
+    }
+  </script>
+</body>
+</html>
