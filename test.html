@@ -129,51 +129,19 @@
 <div class="container" id="directory"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script>
-  const dataUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
-const statistikUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=2034381075&single=true&output=csv";
+<script>
+const dataUrl = "https://script.google.com/macros/s/AKfycbyIDMuRP2Ozt_lx4V_wWYEwPmk3zIhr5LjxFAUzsrdv6E2fiVjEFpLhXmmYh84IzE5ROA/exec";
 
 let allCards = [];
 
-Papa.parse(statistikUrl, {
-  download: true,
-  header: true,
-  complete: function(statistikResults) {
-    const bidangList = statistikResults.data.filter(row => row["Bidang"]).map(row => row["Bidang"].trim());
-    const jumlahList = statistikResults.data.filter(row => row["Bidang"] && row["Jumlah"]);
-
-    const select = document.getElementById("bidangSelect");
-    bidangList.forEach(bidang => {
-      const option = document.createElement("option");
-      option.value = bidang;
-      option.textContent = bidang;
-      select.appendChild(option);
-    });
-
-    const tbody = document.querySelector("#statistikTable tbody");
-    let total = 0;
-    jumlahList.forEach(row => {
-      const bidang = row["Bidang"].trim();
-      const jumlah = parseInt(row["Jumlah"]) || 0;
-      total += jumlah;
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${bidang}</td><td>${jumlah}</td>`;
-      tbody.appendChild(tr);
-    });
-    document.getElementById("totalCount").textContent = total;
-  }
-});
-
-Papa.parse(dataUrl, {
-  download: true,
-  header: true,
-  complete: function(results) {
-    const data = results.data;
+fetch(dataUrl)
+  .then(response => response.json())
+  .then(data => {
     allCards = data.map((row) => {
       const normalized = {};
       for (let key in row) {
         if (row.hasOwnProperty(key)) {
-          normalized[key.trim().toLowerCase()] = row[key]?.trim();
+          normalized[key.trim().toLowerCase()] = row[key]?.toString().trim();
         }
       }
 
@@ -201,6 +169,35 @@ Papa.parse(dataUrl, {
         bidang,
         html: `
           <div class="card">
-  </script>
+            ${namaSyarikat ? `<div class="company-name">${namaSyarikat}</div>` : ""}
+            <p><span class="label">Nama:</span> ${nama}</p>
+            ${telefon ? `<p><span class="label">Telefon:</span> ${telefon}</p>` : ""}
+            <p><span class="label">Status:</span> ${statusDisplay}</p>
+            ${bidang ? `<p><span class="label">Bidang:</span> ${bidang}</p>` : ""}
+            ${subBidang ? `<p><span class="label">Sub-bidang:</span> ${subBidang}</p>` : ""}
+            ${butiran ? `<p><span class="label">Butiran:</span> ${butiran}</p>` : ""}
+            ${picKad ? `<a href="${picKad}" target="_blank" class="btn-link">Lihat Kad</a>` : ""}
+          </div>
+        `
+      };
+    }).filter(card => card !== null);
+
+    renderCards("Semua");
+  })
+  .catch(error => console.error("Gagal muat data:", error));
+
+document.getElementById("bidangSelect").addEventListener("change", function() {
+  renderCards(this.value);
+});
+
+function renderCards(selectedBidang) {
+  const container = document.getElementById("directory");
+  container.innerHTML = "";
+  const filtered = selectedBidang === "Semua"
+    ? allCards
+    : allCards.filter(card => card.bidang?.toLowerCase() === selectedBidang.toLowerCase());
+  filtered.forEach(card => container.innerHTML += card.html);
+}
+</script>
 </body>
 </html>
