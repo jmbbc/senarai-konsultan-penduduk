@@ -24,6 +24,26 @@
       background: #2e3b41;
       border-bottom: 1px solid #bd9f67;
     }
+    /* ==== Gaya Butang Daftar ==== */
+    .register {
+      text-align: center;
+      margin: 20px 0 10px;
+    }
+    .btn-register {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #bd9f67;
+      color: #243137;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .btn-register:hover {
+      background: #e0c78f;
+      transform: translateY(-2px);
+    }
     .controls {
       padding:20px;
       text-align:center;
@@ -114,6 +134,15 @@
     <p>Inisiatif ini bertujuan memudahkan rujukan tempatan, menjimatkan masa, dan menggalakkan semangat kejiranan.</p>
   </div>
 
+  <!-- Butang Daftar di atas Tapis Bidang -->
+  <div class="register">
+    <a href="https://forms.gle/BsTZ2z81Q4XR8zHw6"
+       target="_blank"
+       class="btn-register">
+      📝 Daftar Perkhidmatan
+    </a>
+  </div>
+
   <!-- Dropdown untuk tapis kad -->
   <div class="controls">
     <label for="bidangSelect">Tapis ikut bidang:</label>
@@ -139,7 +168,6 @@
   <!-- PapaParse untuk statistik CSV -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    // Statistik dari Sheet berasingan (CSV)
     const statistikUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=2034381075&single=true&output=csv";
 
     Papa.parse(statistikUrl, {
@@ -163,7 +191,6 @@
       }
     });
 
-    // Kad dari Apps Script JSON
     const dataUrl = "https://script.google.com/macros/s/AKfycbyIDMuRP2Ozt_lx4V_wWYEwPmk3zIhr5LjxFAUzsrdv6E2fiVjEFpLhXmmYh84IzE5ROA/exec";
     let allCards = [];
 
@@ -176,11 +203,8 @@
             norm[k.trim().toLowerCase()] = row[k]?.toString().trim();
           });
           if (norm["status paparan"]?.toLowerCase() !== "lulus") return null;
-
           const nama = norm["nama"];
           if (!nama) return null;
-
-          // hasilkan HTML kad
           return {
             bidang: norm["bidang"],
             html: `
@@ -198,7 +222,6 @@
           };
         }).filter(c => c);
 
-        // Isi dropdown bidang berdasarkan kad
         const bidangSet = new Set(allCards.map(c => c.bidang).filter(b => b));
         const sel = document.getElementById("bidangSelect");
         bidangSet.forEach(b => {
@@ -211,7 +234,6 @@
       })
       .catch(e => console.error("Gagal muat kad:", e));
 
-    // Event dan fungsi render
     document.getElementById("bidangSelect").addEventListener("change", e => {
       renderCards(e.target.value);
     });
