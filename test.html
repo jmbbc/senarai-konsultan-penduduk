@@ -175,6 +175,21 @@
 
   /* ==== Media Query untuk Mobile ≤480px ==== */
   @media (max-width: 480px) {
+     /* Pastikan container masih 80% pada mobile */
+  .register {
+    width: 80%;
+    max-width: 500px;
+    margin: 20px auto;
+    flex-direction: column;
+  }
+  /* Butang isi penuh container (.register) */
+  .btn-register,
+  .btn-share {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
     /* Susun butang menegak pada mobile */
     .register {
       flex-direction: column;
