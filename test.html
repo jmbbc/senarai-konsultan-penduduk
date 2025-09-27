@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Senarai Perkhidmatan Penduduk</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tenorite&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tenorite&display=swap" rel="stylesheet"/>
   <style>
     body { font-family: 'Tenorite', sans-serif; margin:0; padding:0; background:#1a1a1a; }
     h1 {
@@ -15,6 +15,37 @@
       margin:0;
       font-weight:600;
       letter-spacing:1px;
+    }
+    .controls {
+      padding:20px;
+      text-align:center;
+      color:#f0f0f0;
+    }
+    select {
+      padding:8px;
+      font-size:16px;
+      border-radius:6px;
+      border:none;
+      background:#bd9f67;
+      color:#243137;
+      font-weight:bold;
+    }
+    table {
+      margin:20px auto;
+      border-collapse:collapse;
+      width:80%;
+      max-width:600px;
+      background:#243137;
+      color:#f0f0f0;
+    }
+    th, td {
+      border:1px solid #bd9f67;
+      padding:10px;
+      text-align:left;
+    }
+    th {
+      background:#bd9f67;
+      color:#243137;
     }
     .container { display:flex; flex-wrap:wrap; justify-content:center; padding:20px; gap:20px; }
 
@@ -64,21 +95,67 @@
 </head>
 <body>
   <h1>Senarai Perkhidmatan Penduduk</h1>
+  <div class="controls">
+    <label for="bidangSelect">Tapis ikut bidang:</label>
+    <select id="bidangSelect">
+      <option value="Semua">Semua</option>
+    </select>
+  </div>
+
+  <table id="statistikTable">
+    <thead>
+      <tr><th>Bidang</th><th>Jumlah Berdaftar</th></tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+      <tr><th>Jumlah Keseluruhan</th><th id="totalCount">0</th></tr>
+    </tfoot>
+  </table>
+
   <div class="container" id="directory"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
   <script>
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
+    const dataUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=1819529203&single=true&output=csv";
+    const statistikUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=2034381075&single=true&output=csv";
 
-    Papa.parse(csvUrl, {
+    let allCards = [];
+
+    Papa.parse(statistikUrl, {
+      download: true,
+      header: true,
+      complete: function(statistikResults) {
+        const bidangList = statistikResults.data.filter(row => row["Bidang"]).map(row => row["Bidang"].trim());
+        const jumlahList = statistikResults.data.filter(row => row["Bidang"] && row["Jumlah"]);
+
+        const select = document.getElementById("bidangSelect");
+        bidangList.forEach(bidang => {
+          const option = document.createElement("option");
+          option.value = bidang;
+          option.textContent = bidang;
+          select.appendChild(option);
+        });
+
+        const tbody = document.querySelector("#statistikTable tbody");
+        let total = 0;
+        jumlahList.forEach(row => {
+          const bidang = row["Bidang"].trim();
+          const jumlah = parseInt(row["Jumlah"]) || 0;
+          total += jumlah;
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${bidang}</td><td>${jumlah}</td>`;
+          tbody.appendChild(tr);
+        });
+        document.getElementById("totalCount").textContent = total;
+      }
+    });
+
+    Papa.parse(dataUrl, {
       download: true,
       header: true,
       complete: function(results) {
         const data = results.data;
-        let html = "";
-
-        data.forEach((row) => {
+        allCards = data.map((row) => {
           const normalized = {};
           for (let key in row) {
             if (row.hasOwnProperty(key)) {
@@ -87,7 +164,7 @@
           }
 
           const statusPaparan = normalized["status paparan"];
-          if (!statusPaparan || statusPaparan.toLowerCase() !== "lulus") return;
+          if (!statusPaparan || statusPaparan.toLowerCase() !== "lulus") return null;
 
           const namaSyarikat = normalized["nama syarikat"];
           const nama = normalized["nama"];
@@ -104,26 +181,41 @@
             statusDisplay = status || "-";
           }
 
-          if (!nama) return;
+          if (!nama) return null;
 
-          let card = `
-            <div class="card">
-              ${namaSyarikat ? `<div class="company-name">${namaSyarikat}</div>` : ""}
-              <p><span class="label">Nama:</span> ${nama}</p>
-              ${telefon ? `<p><span class="label">Telefon:</span> ${telefon}</p>` : ""}
-              <p><span class="label">Status:</span> ${statusDisplay}</p>
-              ${bidang ? `<p><span class="label">Bidang:</span> ${bidang}</p>` : ""}
-              ${subBidang ? `<p><span class="label">Sub-bidang:</span> ${subBidang}</p>` : ""}
-              ${butiran ? `<p><span class="label">Butiran:</span> ${butiran}</p>` : ""}
-              ${picKad ? `<a href="${picKad}" target="_blank" class="btn-link">Lihat Kad</a>` : ""}
-            </div>
-          `;
-          html += card;
-        });
+          return {
+            bidang,
+            html: `
+              <div class="card">
+                ${namaSyarikat ? `<div class="company-name">${namaSyarikat}</div>` : ""}
+                <p><span class="label">Nama:</span> ${nama}</p>
+                ${telefon ? `<p><span class="label">Telefon:</span> ${telefon}</p>` : ""}
+                <p><span class="label">Status:</span> ${statusDisplay}</p>
+                ${bidang ? `<p><span class="label">Bidang:</span> ${bidang}</p>` : ""}
+                ${subBidang ? `<p><span class="label">Sub-bidang:</span> ${subBidang}</p>` : ""}
+                ${butiran ? `<p><span class="label">Butiran:</span> ${butiran}</p>` : ""}
+                ${picKad ? `<a href="${picKad}" target="_blank" class="btn-link">Lihat Kad</a>` : ""}
+              </div>
+            `
+          };
+        }).filter(card => card !== null);
 
-        document.getElementById("directory").innerHTML = html;
+        renderCards("Semua");
       }
     });
+
+    document.getElementById("bidangSelect").addEventListener("change", function() {
+      renderCards(this.value);
+    });
+
+    function renderCards(selectedBidang) {
+      const container = document.getElementById("directory");
+      container.innerHTML = "";
+      const filtered = selectedBidang === "Semua"
+        ? allCards
+        : allCards.filter(card => card.bidang?.toLowerCase() === selectedBidang.toLowerCase());
+      filtered.forEach(card => container.innerHTML += card.html);
+    }
   </script>
 </body>
 </html>
