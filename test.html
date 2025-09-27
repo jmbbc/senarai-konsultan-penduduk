@@ -135,6 +135,31 @@ const dataUrl = "https://script.google.com/macros/s/AKfycbyIDMuRP2Ozt_lx4V_wWYEw
 let allCards = [];
 
 fetch(dataUrl)
+  <script>
+const statistikUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=2034381075&single=true&output=csv";
+
+Papa.parse(statistikUrl, {
+  download: true,
+  header: true,
+  complete: function(statistikResults) {
+    const jumlahList = statistikResults.data.filter(row => row["Bidang"] && row["Jumlah"]);
+    const tbody = document.querySelector("#statistikTable tbody");
+    let total = 0;
+
+    jumlahList.forEach(row => {
+      const bidang = row["Bidang"].trim();
+      const jumlah = parseInt(row["Jumlah"]) || 0;
+      total += jumlah;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${bidang}</td><td>${jumlah}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById("totalCount").textContent = total;
+  }
+});
+</script>
   .then(response => response.json())
   .then(data => {
     allCards = data.map((row) => {
