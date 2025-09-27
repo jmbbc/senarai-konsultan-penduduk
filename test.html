@@ -149,7 +149,20 @@
       background:#e0c78f;
       color:#000;
     }
+/* ==== Samakan Lebar & Margin Section ==== */
+.intro,
+.register,
+.controls {
+  width: 80%;           /* 80% dari lebar skrin */
+  max-width: 500px;     /* maksimum 500px */
+  margin: 20px auto;    /* 20px atas/bawah, auto kiri/kanan untuk center */
+  box-sizing: border-box;
+}
 
+/* Pastikan header tak ada jarak bawah berlebihan */
+h1 {
+  margin-bottom: 0;
+}
     /* ==== Media Query untuk Mobile ≤480px ==== */
 @media (max-width: 480px) {
   /* Susun butang Daftar + Kongsi menegak */
