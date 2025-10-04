@@ -284,20 +284,33 @@
           });
           if (norm["status paparan"]?.toLowerCase() !== "lulus") return null;
           if (!norm["nama"]) return null;
-          return {
-            bidang: norm["bidang"],
-            html: `
-              <div class="card">
-                ${norm["nama syarikat"] ? `<div class="company-name">${norm["nama syarikat"]}</div>` : ""}
-                <p><span class="label">Nama:</span> ${norm["nama"]}</p>
-                ${norm["nombor telefon syarikat"] ? `<p><span class="label">Telefon:</span> ${norm["nombor telefon syarikat"]}</p>` : ""}
-                <p><span class="label">Status:</span> ${(norm["kebenaran untuk berkongsi maklumat jawatan"]?.toLowerCase()==="benarkan") ? norm["status dalam syarikat"] || "-" : "-"}</p>
-                ${norm["bidang"] ? `<p><span class="label">Bidang:</span> ${norm["bidang"]}</p>` : ""}
-                ${norm["sub-bidang"] ? `<p><span class="label">Sub-bidang:</span> ${norm["sub-bidang"]}</p>` : ""}
-                ${norm["butiran perkhidmatan"] ? `<p><span class="label">Butiran:</span> ${norm["butiran perkhidmatan"]}</p>` : ""}
-                ${norm["pic kad"] ? `<a href="${norm["pic kad"]}" target="_blank" class="btn-link">Lihat Kad</a>` : ""}
-              </div>`
-          };
+         return {
+  bidang: norm["bidang"],
+  html: `
+    <div class="card">
+      ${norm["nama syarikat"] ? `<div class="company-name">${norm["nama syarikat"]}</div>` : ""}
+      <p><span class="label">Nama:</span> ${norm["nama"]}</p>
+      ${norm["nombor telefon syarikat"] ? `<p><span class="label">Telefon:</span> ${norm["nombor telefon syarikat"]}</p>` : ""}
+      <p><span class="label">Status:</span> ${(norm["kebenaran untuk berkongsi maklumat jawatan"]?.toLowerCase()==="benarkan") ? norm["status dalam syarikat"] || "-" : "-"}</p>
+      ${norm["bidang"] ? `<p><span class="label">Bidang:</span> ${norm["bidang"]}</p>` : ""}
+      ${norm["sub-bidang"] ? `<p><span class="label">Sub-bidang:</span> ${norm["sub-bidang"]}</p>` : ""}
+      ${norm["butiran perkhidmatan"] ? `<p><span class="label">Butiran:</span> ${norm["butiran perkhidmatan"]}</p>` : ""}
+      ${norm["pic kad"] ? `<a href="${norm["pic kad"]}" target="_blank" class="btn-link">Lihat Kad</a>` : ""}
+      <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(
+        `📌 *Kad Perkhidmatan Penduduk Banjaria Court*\n\n` +
+        `👤 Nama: ${norm["nama"]}\n` +
+        (norm["nama syarikat"] ? `🏢 Syarikat: ${norm["nama syarikat"]}\n` : "") +
+        (norm["nombor telefon syarikat"] ? `📞 Telefon: ${norm["nombor telefon syarikat"]}\n` : "") +
+        `📋 Status: ${(norm["kebenaran untuk berkongsi maklumat jawatan"]?.toLowerCase()==="benarkan") ? norm["status dalam syarikat"] || "-" : "-"}\n` +
+        (norm["bidang"] ? `📂 Bidang: ${norm["bidang"]}\n` : "") +
+        (norm["sub-bidang"] ? `📁 Sub-bidang: ${norm["sub-bidang"]}\n` : "") +
+        (norm["butiran perkhidmatan"] ? `📝 Butiran: ${norm["butiran perkhidmatan"]}\n` : "") +
+        (norm["pic kad"] ? `📎 Kad: ${norm["pic kad"]}` : "")
+      )}" target="_blank" class="btn-link" style="margin-top:10px; background:#25D366; color:#fff;">
+        📤 Kongsi Kad
+      </a>
+    </div>`
+};
         }).filter(c => c);
 
         // Isi dropdown bidang
