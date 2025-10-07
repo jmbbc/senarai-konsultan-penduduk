@@ -76,6 +76,20 @@
         <div id="jumlahPerkhidmatan" class="mt-2 text-3xl font-extrabold text-black">—</div>
       </div>
     </section>
+    
+<!-- Bar carian: tampal sebelum section Tapis ikut bidang -->
+<section class="mb-4">
+  <div class="max-w-4xl mx-auto flex gap-2 items-center">
+    <div class="flex-1">
+      <label for="searchInput" class="sr-only">Cari perkhidmatan</label>
+      <input id="searchInput" type="search"
+        class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent/60"
+        placeholder="Cari nama, syarikat, telefon, bidang, atau butiran..." />
+    </div>
+    <button id="clearSearch" class="ml-2 px-4 py-2 bg-white border rounded-md text-sm text-slate-700 shadow-sm hover:bg-slate-50">Kosong</button>
+    <div id="searchCount" class="ml-2 text-sm text-slate-600">0 keputusan</div>
+  </div>
+</section>
 
     <section class="mb-6">
       <label for="bidangSelect" class="block text-sm text-slate-700 mb-2">Tapis ikut bidang:</label>
@@ -100,6 +114,140 @@
         .replace(/"/g,'&quot;')
         .replace(/'/g,'&#39;');
     }
+
+// --- Search helpers (tampal sekali, sebelum fetch(dataUrl)) ---
+function normalizeText(s){ return (s || '').toString().toLowerCase(); }
+
+function escapeRegex(str){
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// highlight simple: wrap matched terms with <mark>
+function highlightHTML(text, query){
+  if(!query) return escapeHTML(text);
+  try {
+    const q = escapeRegex(query);
+    const re = new RegExp(`(${q})`, 'ig');
+    return escapeHTML(text).replace(re, '<mark class="bg-yellow-200 text-black rounded-sm px-0.5">$1</mark>');
+  } catch(e) {
+    return escapeHTML(text);
+  }
+}
+
+// Build index from fields (more reliable than parsing HTML)
+let searchIndex = []; // will hold { card, blob }
+
+function buildSearchIndex(cards){
+  searchIndex = cards.map(c => {
+    const f = c.fields || {};
+    const blob = [
+      f.nama, f.company, f.telefon, f.bidang, f.subbidang, f.butiran
+    ].map(x => normalizeText(x)).join(' | ');
+    return { card: c, blob };
+  });
+  updateSearchCount(cards.length);
+}
+
+function initSearchIndex(){
+  buildSearchIndex(allCards);
+}
+
+// performSearch uses index and current bidang filter
+function performSearch(query, bidangFilter){
+  const q = normalizeText(query).trim();
+  const results = searchIndex.filter(item => {
+    if (bidangFilter && bidangFilter !== 'Semua') {
+      const cardBidang = normalizeText(item.card.fields.bidang || '');
+      if (cardBidang !== bidangFilter.toLowerCase()) return false;
+    }
+    if (!q) return true;
+    return item.blob.indexOf(q) !== -1;
+  }).map(i => i.card);
+
+  // render results with highlighting
+  const dir = document.getElementById('directory');
+  dir.innerHTML = '';
+  if (!results.length) {
+    dir.innerHTML = '<div class="col-span-full text-center text-slate-600 py-6">Tiada perkhidmatan ditemui untuk pilihan ini.</div>';
+    updateSearchCount(0);
+    return;
+  }
+
+  results.forEach(c => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = c.html;
+    if (q) {
+      // highlight visible text nodes
+      const walker = document.createTreeWalker(wrapper, NodeFilter.SHOW_TEXT, null, false);
+      const nodes = [];
+      while(walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(tnode => {
+        const parent = tnode.parentNode;
+        if (!parent) return;
+        const newHTML = highlightHTML(tnode.textContent, q);
+        if (newHTML !== escapeHTML(tnode.textContent)) {
+          const span = document.createElement('span');
+          span.innerHTML = newHTML;
+          parent.replaceChild(span, tnode);
+        }
+      });
+    }
+    dir.appendChild(wrapper.firstElementChild);
+  });
+
+  updateSearchCount(results.length);
+}
+
+function updateSearchCount(n){
+  const el = document.getElementById('searchCount');
+  if (!el) return;
+  el.textContent = `${n} keputusan`;
+}
+
+function debounce(fn, wait){
+  let t;
+  return function(...args){
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), wait);
+  };
+}
+
+// wire up input after DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('clearSearch');
+  const bidangSelect = document.getElementById('bidangSelect');
+
+  // safety: if index isn't ready yet, initSearchIndex will be called after fetch
+  if (searchIndex.length === 0 && allCards.length) initSearchIndex();
+
+  const doSearch = () => {
+    const bidangVal = bidangSelect ? bidangSelect.value : 'Semua';
+    performSearch(input.value, bidangVal);
+  };
+
+  const debouncedSearch = debounce(doSearch, 250);
+  if (input) input.addEventListener('input', debouncedSearch);
+  if (bidangSelect) bidangSelect.addEventListener('change', debouncedSearch);
+
+  if (clearBtn) clearBtn.addEventListener('click', () => {
+    if (!input) return;
+    input.value = '';
+    input.focus();
+    debouncedSearch();
+  });
+
+  if (input) {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { input.value = ''; debouncedSearch(); }
+      if (e.key === 'Enter') {
+        const firstAnchor = document.querySelector('#directory a');
+        if (firstAnchor) firstAnchor.focus();
+      }
+    });
+  }
+});
+
 
     // Statistik CSV URL (anda sudah publish CSV)
     const statistikUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=2034381075&single=true&output=csv";
@@ -127,82 +275,116 @@
         document.getElementById("jumlahPerkhidmatan").textContent = '0';
       });
 
-    // Data cards endpoint
-    const dataUrl = "https://script.google.com/macros/s/AKfycbyIDMuRP2Ozt_lx4V_wWYEwPmk3zIhr5LjxFAUzsrdv6E2fiVjEFpLhXmmYh84IzE5ROA/exec";
-    let allCards = [];
+  // Data cards endpoint (ganti blok lama ini dengan yang baru)
+const dataUrl = "https://script.google.com/macros/s/AKfycbyIDMuRP2Ozt_lx4V_wWYEwPmk3zIhr5LjxFAUzsrdv6E2fiVjEFpLhXmmYh84IzE5ROA/exec";
+let allCards = []; // setiap item: { bidang, fields: {...}, html }
 
-    fetch(dataUrl)
-      .then(r => r.json())
-      .then(data => {
-        allCards = (data || []).map(row => {
-          const norm = {};
-          Object.keys(row || {}).forEach(k => {
-            norm[k.trim().toLowerCase()] = row[k] != null ? String(row[k]).trim() : '';
-          });
+fetch(dataUrl)
+  .then(r => {
+    if (!r.ok) throw new Error('Gagal dapatkan data');
+    return r.json();
+  })
+  .then(data => {
+    allCards = (data || []).map(row => {
+      const norm = {};
+      Object.keys(row || {}).forEach(k => {
+        norm[k.trim().toLowerCase()] = row[k] != null ? String(row[k]).trim() : '';
+      });
 
-          if ((norm["status paparan"] || '').toLowerCase() !== "lulus") return null;
-          if (!norm["nama"]) return null;
+      // tapis rekod yang tidak mahu dipaparkan
+      if ((norm["status paparan"] || '').toLowerCase() !== "lulus") return null;
+      if (!norm["nama"]) return null;
 
-          const company = escapeHTML(norm["nama syarikat"]);
-          const nama = escapeHTML(norm["nama"]);
-          const telefon = escapeHTML(norm["nombor telefon syarikat"]);
-          const bidang = escapeHTML(norm["bidang"]);
-          const subbidang = escapeHTML(norm["sub-bidang"]);
-          const butiran = escapeHTML(norm["butiran perkhidmatan"]);
-          const picKad = escapeHTML(norm["pic kad"]);
-          const statusJawatan = ((norm["kebenaran untuk berkongsi maklumat jawatan"] || '').toLowerCase() === "benarkan")
-            ? escapeHTML(norm["status dalam syarikat"] || "-")
-            : "-";
+      // ambil medan asal dengan fallback key names
+      const companyRaw = norm["nama syarikat"] || norm["syarikat"] || '';
+      const namaRaw = norm["nama"] || norm["nama penuh"] || '';
+      const telefonRaw = norm["nombor telefon syarikat"] || norm["telefon"] || norm["telefon bimbit"] || '';
+      const bidangRaw = norm["bidang"] || '';
+      const subbidangRaw = norm["sub-bidang"] || norm["sub bidang"] || '';
+      const butiranRaw = (norm["butiran perkhidmatan"] || norm["butiran"] || norm["butiran_perkhidmatan"] || '').trim();
+      const picKadRaw = norm["pic kad"] || norm["kad"] || '';
+      const kebenaranRaw = (norm["kebenaran untuk berkongsi maklumat jawatan"] || '').toLowerCase();
+      const statusDalamSyarikatRaw = norm["status dalam syarikat"] || norm["jawatan"] || '';
 
-          const waText = encodeURIComponent(
-            "📌 Kad Perkhidmatan Penduduk Banjaria Court\n\n" +
-            "👤 Nama: " + nama + "\n" +
-            (company ? "🏢 Syarikat: " + company + "\n" : "") +
-            (telefon ? "📞 Telefon: " + telefon + "\n" : "") +
-            "📋 Status: " + statusJawatan + "\n" +
-            (bidang ? "📂 Bidang: " + bidang + "\n" : "") +
-            (subbidang ? "📁 Sub-bidang: " + subbidang + "\n" : "") +
-            (butiran ? "📝 Butiran: " + butiran + "\n" : "") +
-            (picKad ? "📎 Kad: " + picKad : "")
-          );
+      // escape untuk HTML rendering
+      const company = escapeHTML(companyRaw);
+      const nama = escapeHTML(namaRaw);
+      const telefon = escapeHTML(telefonRaw);
+      const bidang = escapeHTML(bidangRaw);
+      const subbidang = escapeHTML(subbidangRaw);
+      const butiran = escapeHTML(butiranRaw);
+      const picKad = escapeHTML(picKadRaw);
+      const statusJawatan = (kebenaranRaw === "benarkan") ? escapeHTML(statusDalamSyarikatRaw || "-") : "-";
 
-          const html = `
-    <article class="bg-panel border border-gray-100 rounded-xl p-4 shadow-sm flex flex-col">
-    ${company ? `<div class="text-black font-extrabold text-xl uppercase tracking-wide mb-1">${company}</div>` : ''}
-    <h3 class="text-black font-bold text-lg">${nama}</h3>
+      // waText menggunakan nilai yang bersih (tanpa escaping)
+      const waText = encodeURIComponent(
+        "📌 Kad Perkhidmatan Penduduk Banjaria Court\n\n" +
+        "👤 Nama: " + namaRaw + "\n" +
+        (companyRaw ? "🏢 Syarikat: " + companyRaw + "\n" : "") +
+        (telefonRaw ? "📞 Telefon: " + telefonRaw + "\n" : "") +
+        "📋 Status: " + statusJawatan + "\n" +
+        (bidangRaw ? "📂 Bidang: " + bidangRaw + "\n" : "") +
+        (subbidangRaw ? "📁 Sub-bidang: " + subbidangRaw + "\n" : "") +
+        (butiranRaw ? "📝 Butiran: " + butiranRaw + "\n" : "") +
+        (picKadRaw ? "📎 Kad: " + picKadRaw : "")
+      );
 
-    ${telefon ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Telefon:</span> <span class="text-slate-700 ml-2">${telefon}</span></div>` : ''}
+      // bina HTML kad
+      const html = `
+<article class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex flex-col">
+  ${company ? `<div class="text-black font-extrabold text-xl uppercase tracking-wide mb-1">${company}</div>` : ''}
+  <h3 class="text-black font-bold text-lg">${nama}</h3>
 
-    ${statusJawatan ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Status:</span> <span class="text-slate-700 ml-2">${statusJawatan}</span></div>` : `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Status:</span> <span class="text-slate-700 ml-2">-</span></div>`}
+  ${telefon ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Telefon:</span> <span class="text-slate-700 ml-2">${telefon}</span></div>` : ''}
 
-    ${bidang ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Bidang:</span> <span class="text-slate-700 ml-2">${bidang}</span></div>` : ''}
+  ${statusJawatan ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Status:</span> <span class="text-slate-700 ml-2">${statusJawatan}</span></div>` : `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Status:</span> <span class="text-slate-700 ml-2">-</span></div>`}
 
-    ${subbidang ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Sub-bidang:</span> <span class="text-slate-700 ml-2">${subbidang}</span></div>` : ''}
-    
-    ${butiran ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Butiran Perkhidmatan:</span> <span class="text-slate-700 ml-2">${butiran}</span></div>` : ''}
-    
-    <div class="mt-4 flex gap-2">
-      ${picKad ? `<a href="${picKad}" target="_blank" class="px-3 py-2 bg-accent text-slate-900 rounded-md text-sm font-semibold flex items-center gap-2 border border-accent/20">📎 Lihat Kad</a>` : ''}
-      <a href="https://api.whatsapp.com/send?text=${waText}" target="_blank" class="ml-auto px-3 py-2 bg-accent text-slate-900 rounded-md text-sm font-semibold flex items-center gap-2">📤 Hantar ke WhatsApp</a>
-    </div>
-    </article>
+  ${bidang ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Bidang:</span> <span class="text-slate-700 ml-2">${bidang}</span></div>` : ''}
+
+  ${subbidang ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Sub-bidang:</span> <span class="text-slate-700 ml-2">${subbidang}</span></div>` : ''}
+
+  ${butiran ? `<p class="mt-3 text-slate-700 text-sm">${butiran}</p>` : `<p class="mt-3 text-slate-500 text-sm"><em>Tiada butiran</em></p>`}
+
+  <div class="mt-4 flex gap-2">
+    ${picKad ? `<a href="${picKad}" target="_blank" class="px-3 py-2 bg-accent text-slate-900 rounded-md text-sm font-semibold flex items-center gap-2 border border-accent/20">📎 Lihat Kad</a>` : ''}
+    <a href="https://api.whatsapp.com/send?text=${waText}" target="_blank" class="ml-auto px-3 py-2 bg-accent text-slate-900 rounded-md text-sm font-semibold flex items-center gap-2">📤 Hantar ke WhatsApp</a>
+  </div>
+</article>
 `.trim();
 
-          return { bidang: norm["bidang"] || '', html };
-        }).filter(Boolean);
+      // simpan objek lengkap dengan fields asal untuk carian berasaskan medan
+      return {
+        bidang: bidangRaw || '',
+        fields: {
+          company: companyRaw,
+          nama: namaRaw,
+          telefon: telefonRaw,
+          bidang: bidangRaw,
+          subbidang: subbidangRaw,
+          butiran: butiranRaw,
+          picKad: picKadRaw,
+          statusJawatan: statusJawatan
+        },
+        html
+      };
+    }).filter(Boolean);
 
-        // populate bidang select
-        const sel = document.getElementById("bidangSelect");
-        const bidangSet = new Set(allCards.map(c => c.bidang).filter(Boolean));
-        [...bidangSet].sort().forEach(b => {
-          const opt = document.createElement('option');
-          opt.value = b; opt.textContent = b;
-          sel.appendChild(opt);
-        });
+    // populate bidang select (gunakan nilai sebenar)
+    const sel = document.getElementById("bidangSelect");
+    sel.innerHTML = '<option value="Semua">Semua</option>';
+    const bidangSet = new Set(allCards.map(c => c.bidang).filter(Boolean));
+    [...bidangSet].sort().forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b; opt.textContent = b;
+      sel.appendChild(opt);
+    });
 
-        renderCards("Semua");
-      })
-      .catch(e => console.error("Gagal muat kad:", e));
+    // render dan bina search index
+    renderCards("Semua");
+    initSearchIndex();
+  })
+  .catch(e => console.error("Gagal muat kad:", e));
+
 
     // filter listener
     document.getElementById("bidangSelect").addEventListener("change", e => renderCards(e.target.value));
