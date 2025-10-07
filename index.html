@@ -1,348 +1,236 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Senarai Perkhidmatan Penduduk Banjaria Court</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tenorite&display=swap" rel="stylesheet"/>
- <style>
-  body {
-    font-family: 'Tenorite', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #1a1a1a;
-  }
 
-  h1 {
-    text-align: center;
-    padding: 20px;
-    background: #243137;
-    color: #bd9f67;
-    margin: 0;             /* reset semua margin */
-    margin-bottom: 0;      /* rapatkan terus ke .intro */
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
+  <!-- Google Font (Inter) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  .intro {
-    text-align: center;
-    padding: 15px 20px;
-    color: #f0f0f0;
-    font-size: 16px;
-    background: #2e3b41;
-    border-bottom: 1px solid #bd9f67;
-  }
-
-  /* ==== Gaya Butang Daftar + Kongsi ==== */
-  .register {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;   /* selari secara menegak */
-    gap: 12px;             /* ruang konsisten antara butang */
-    margin: 20px 0;
-  }
-
-  .btn-register,
-  .btn-share {
-    display: inline-block;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 6px;
-    text-decoration: none;
-    white-space: nowrap;   /* elak teks terbaris */
-    transition: background 0.3s ease, transform 0.3s ease;
-  }
-
-  .btn-register {
-    background: #bd9f67;
-    color: #243137;
-  }
-  .btn-register:hover {
-    background: #e0c78f;
-    transform: translateY(-2px);
-  }
-
-  .btn-share {
-    background: #25D366;
-    color: #fff;
-  }
-  .btn-share:hover {
-    background: #1DA851;
-    transform: translateY(-2px);
-  }
-
-  .controls {
-    padding: 20px;
-    text-align: center;
-    color: #f0f0f0;
-  }
-
-  select {
-    padding: 8px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
-    background: #bd9f67;
-    color: #243137;
-    font-weight: bold;
-  }
-
-  table {
-    margin: 20px auto;
-    border-collapse: collapse;
-    width: 80%;
-    max-width: 500px;
-    background: #243137;
-    color: #f0f0f0;
-  }
-  th, td {
-    border: 1px solid #000;
-    padding: 10px;
-  }
-  th {
-    background: #bd9f67;
-    color: #243137;
-    text-align: left;
-  }
-  td:nth-child(2) {
-    text-align: center;
-  }
-
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 20px;
-    gap: 20px;
-  }
-
-  .card {
-    width: 300px;
-    min-height: 220px;
-    background: #243137;
-    border-radius: 10px;
-    padding: 15px;
-    box-sizing: border-box;
-    color: #f0f0f0;
-    transition: all 0.5s ease-in-out;
-  }
-  .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(189,159,103,0.6);
-  }
-
-  .company-name {
-    font-size: 20px;
-    font-weight: bold;
-    color: #bd9f67;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .label {
-    font-weight: bold;
-    color: #bd9f67;
-  }
-
-  .btn-link {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 8px 14px;
-    background: #bd9f67;
-    color: #243137;
-    font-weight: bold;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-  }
-  .btn-link:hover {
-    background: #e0c78f;
-    color: #000;
-  }
-
-  /* ==== Samakan Lebar & Margin Section ==== */
-  .intro,
-  .register,
-  .controls {
-    width: 80%;           /* konsisten 80% viewport */
-    max-width: 500px;     /* tak lebih 500px */
-    margin: 20px auto;    /* center + jarak 20px */
-    box-sizing: border-box;
-  }
-
-  /* ==== Media Query untuk Mobile ≤480px ==== */
-  @media (max-width: 480px) {
-     /* Pastikan container masih 80% pada mobile */
-  .register {
-    width: 80%;
-    max-width: 500px;
-    margin: 20px auto;
-    flex-direction: column;
-  }
-  /* Butang isi penuh container (.register) */
-  .btn-register,
-  .btn-share {
-    width: 100%;
-    box-sizing: border-box;
-  }
-}
-
-    /* Susun butang menegak pada mobile */
-    .register {
-      flex-direction: column;
-    }
-    /* Buat butang penuh lebar kontena */
-    .btn-register,
-    .btn-share {
-      width: 100%;
-    }
-  }
-</style>
-</head>
-<body>
-  <h1>Senarai Perkhidmatan Penduduk Banjaria Court</h1>
-
-  <div class="intro">
-    <p><strong>Konsultan Profesional Penduduk Banjaria Court</strong></p>
-    <p>Ramai dalam kalangan penduduk Banjaria Court memiliki kepakaran dalam pelbagai bidang profesional. Perkhidmatan mereka sering diperlukan oleh komuniti kita.</p>
-    <p>Inisiatif ini bertujuan memudahkan rujukan tempatan, menjimatkan masa, dan menggalakkan semangat kejiranan.</p>
-  </div>
-
-  <!-- Butang Daftar + Kongsi via WhatsApp -->
-  <div class="register">
-    <a href="https://forms.gle/BsTZ2z81Q4XR8zHw6"
-       target="_blank"
-       class="btn-register">
-      📝 Daftar Perkhidmatan
-    </a>
-    <a id="shareLink"
-       href="#"
-       target="_blank"
-       class="btn-share">
-      🔗 Kongsi via WhatsApp
-    </a>
-  </div>
-
-  <!-- Dropdown untuk tapis kad -->
-  <div class="controls">
-    <label for="bidangSelect">Tapis ikut bidang:</label>
-    <select id="bidangSelect">
-      <option value="Semua">Semua</option>
-    </select>
-  </div>
-
-  <!-- Jadual statistik dari Sheet berasingan -->
-  <table id="statistikTable">
-    <thead>
-      <tr><th>Bidang</th><th>Jumlah Berdaftar</th></tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-      <tr><th>Jumlah Keseluruhan</th><th id="totalCount">0</th></tr>
-    </tfoot>
-  </table>
-
-  <!-- Kontena untuk kad -->
-  <div class="container" id="directory"></div>
-
-  <!-- PapaParse untuk statistik CSV -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Papar statistik
-    const statistikUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=2034381075&single=true&output=csv";
-    Papa.parse(statistikUrl, {
-      download: true,
-      header: true,
-      complete: res => {
-        const rows = res.data.filter(r => r["Bidang"] && r["Jumlah"]);
-        let total = 0;
-        const tbody = document.querySelector("#statistikTable tbody");
-        rows.forEach(r => {
-          const b = r["Bidang"].trim();
-          const j = parseInt(r["Jumlah"]) || 0;
-          total += j;
-          tbody.insertAdjacentHTML("beforeend",
-            `<tr><td>${b}</td><td>${j}</td></tr>`);
-        });
-        document.getElementById("totalCount").textContent = total;
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            page: '#F7FBF9',
+            panel: '#E8F3EE',
+            accent: '#BFDCC4',
+            'accent-dark': '#A6C9AD',
+            muted: '#8B9B92'
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui']
+          }
+        }
       }
-    });
+    }
+  </script>
 
-    // Papar kad perkhidmatan
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+  </style>
+</head>
+<body class="min-h-screen bg-page text-black antialiased">
+
+  <header class="bg-panel shadow-sm">
+    <div class="max-w-4xl mx-auto px-4 py-4">
+      <h1 class="text-center text-2xl font-extrabold tracking-wide text-black">Senarai Perkhidmatan Penduduk Banjaria Court</h1>
+    </div>
+  </header>
+
+ <main class="max-w-4xl mx-auto px-4 py-6">
+  <section class="bg-panel rounded-lg p-5 mb-6 border border-accent/30 shadow-sm text-justify">
+    <p class="font-semibold text-slate-800">Konsultan Profesional Penduduk Banjaria Court</p>
+
+    <p class="mt-2 text-slate-700 text-sm leading-relaxed">
+      Ramai dalam kalangan penduduk Banjaria Court memiliki kepakaran dalam pelbagai bidang profesional. Perkhidmatan mereka sering diperlukan oleh komuniti kita.
+    </p>
+
+    <p class="mt-2 text-slate-700 text-sm leading-relaxed">
+      Inisiatif ini bertujuan memudahkan rujukan tempatan, menjimatkan masa, dan menggalakkan semangat kejiranan.
+    </p>
+  </section>
+</main>
+
+
+
+    <section class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+      <a href="https://forms.gle/BsTZ2z81Q4XR8zHw6" target="_blank"
+         class="inline-block w-full sm:w-auto text-slate-900 bg-accent hover:bg-accent-dark font-semibold px-4 py-2 rounded-lg text-center shadow-sm">
+        📝 Daftar Perkhidmatan
+      </a>
+
+      <a id="shareLink" href="#"
+         class="inline-block w-full sm:w-auto bg-gradient-to-r from-accent/90 to-accent-dark hover:from-accent-dark hover:to-accent text-slate-900 font-semibold px-4 py-2 rounded-lg text-center shadow-sm">
+        🔗 Kongsi via WhatsApp
+      </a>
+    </section>
+
+    <!-- Statistik ringkas: Jumlah -->
+    <section id="statistikRingkas" class="mb-6">
+      <div class="bg-panel rounded-lg p-5 mb-6 border border-accent/30 shadow-sm text-center">
+        <div class="text-sm font-semibold text-slate-700">Jumlah Perkhidmatan Yang Berdaftar</div>
+        <div id="jumlahPerkhidmatan" class="mt-2 text-3xl font-extrabold text-black">—</div>
+      </div>
+    </section>
+
+    <section class="mb-6">
+      <label for="bidangSelect" class="block text-sm text-slate-700 mb-2">Tapis ikut bidang:</label>
+      <select id="bidangSelect" class="w-full sm:w-64 bg-white border border-panel/60 text-slate-800 p-2 rounded-md shadow-sm">
+        <option value="Semua">Semua</option>
+      </select>
+    </section>
+
+    <section class="mb-12">
+      <div id="directory" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+    </section>
+  </main>
+
+  <script>
+    // escapeHTML helper
+    function escapeHTML(str){
+      if(!str) return '';
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;');
+    }
+
+    // Statistik CSV URL (anda sudah publish CSV)
+    const statistikUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=2034381075&single=true&output=csv";
+
+    // Ambil B1 dari CSV yang dipublish dan paparkan dalam kad Statistik
+    fetch(statistikUrl)
+      .then(r => { if(!r.ok) throw new Error('Gagal muat statistik'); return r.text(); })
+      .then(csvText => {
+        const lines = csvText.trim().split(/\r?\n/);
+        function extractFromLine(line) {
+          // split mudah; jika CSV mengandungi koma dalam sel, gunakan parser (papaparse)
+          const cols = line.split(',');
+          return cols.length > 1 ? cols[1].trim() : '';
+        }
+        let value = extractFromLine(lines[0]);
+        if (!value && lines.length > 1) value = extractFromLine(lines[1]);
+        if (!value) {
+          const found = csvText.match(/,?\s*(\d{1,})\s*(?:,|\r?\n|$)/);
+          value = found ? found[1] : '0';
+        }
+        document.getElementById("jumlahPerkhidmatan").textContent = value || '0';
+      })
+      .catch(err => {
+        console.warn(err);
+        document.getElementById("jumlahPerkhidmatan").textContent = '0';
+      });
+
+    // Data cards endpoint
     const dataUrl = "https://script.google.com/macros/s/AKfycbyIDMuRP2Ozt_lx4V_wWYEwPmk3zIhr5LjxFAUzsrdv6E2fiVjEFpLhXmmYh84IzE5ROA/exec";
     let allCards = [];
+
     fetch(dataUrl)
       .then(r => r.json())
       .then(data => {
-        allCards = data.map(row => {
+        allCards = (data || []).map(row => {
           const norm = {};
-          Object.keys(row).forEach(k => {
-            norm[k.trim().toLowerCase()] = row[k]?.toString().trim();
+          Object.keys(row || {}).forEach(k => {
+            norm[k.trim().toLowerCase()] = row[k] != null ? String(row[k]).trim() : '';
           });
-          if (norm["status paparan"]?.toLowerCase() !== "lulus") return null;
-          if (!norm["nama"]) return null;
-         return {
-  bidang: norm["bidang"],
-  html: `
-    <div class="card">
-      ${norm["nama syarikat"] ? `<div class="company-name">${norm["nama syarikat"]}</div>` : ""}
-      <p><span class="label">Nama:</span> ${norm["nama"]}</p>
-      ${norm["nombor telefon syarikat"] ? `<p><span class="label">Telefon:</span> ${norm["nombor telefon syarikat"]}</p>` : ""}
-      <p><span class="label">Status:</span> ${(norm["kebenaran untuk berkongsi maklumat jawatan"]?.toLowerCase()==="benarkan") ? norm["status dalam syarikat"] || "-" : "-"}</p>
-      ${norm["bidang"] ? `<p><span class="label">Bidang:</span> ${norm["bidang"]}</p>` : ""}
-      ${norm["sub-bidang"] ? `<p><span class="label">Sub-bidang:</span> ${norm["sub-bidang"]}</p>` : ""}
-      ${norm["butiran perkhidmatan"] ? `<p><span class="label">Butiran:</span> ${norm["butiran perkhidmatan"]}</p>` : ""}
-      ${norm["pic kad"] ? `<a href="${norm["pic kad"]}" target="_blank" class="btn-link">Lihat Kad</a>` : ""}
-      <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(
-        `📌 *Kad Perkhidmatan Penduduk Banjaria Court*\n\n` +
-        `👤 Nama: ${norm["nama"]}\n` +
-        (norm["nama syarikat"] ? `🏢 Syarikat: ${norm["nama syarikat"]}\n` : "") +
-        (norm["nombor telefon syarikat"] ? `📞 Telefon: ${norm["nombor telefon syarikat"]}\n` : "") +
-        `📋 Status: ${(norm["kebenaran untuk berkongsi maklumat jawatan"]?.toLowerCase()==="benarkan") ? norm["status dalam syarikat"] || "-" : "-"}\n` +
-        (norm["bidang"] ? `📂 Bidang: ${norm["bidang"]}\n` : "") +
-        (norm["sub-bidang"] ? `📁 Sub-bidang: ${norm["sub-bidang"]}\n` : "") +
-        (norm["butiran perkhidmatan"] ? `📝 Butiran: ${norm["butiran perkhidmatan"]}\n` : "") +
-        (norm["pic kad"] ? `📎 Kad: ${norm["pic kad"]}` : "")
-      )}" target="_blank" class="btn-link" style="margin-top:10px; background:#25D366; color:#fff;">
-        📤 Hantar ke WhatsApp
-      </a>
-    </div>`
-};
-        }).filter(c => c);
 
-        // Isi dropdown bidang
+          if ((norm["status paparan"] || '').toLowerCase() !== "lulus") return null;
+          if (!norm["nama"]) return null;
+
+          const company = escapeHTML(norm["nama syarikat"]);
+          const nama = escapeHTML(norm["nama"]);
+          const telefon = escapeHTML(norm["nombor telefon syarikat"]);
+          const bidang = escapeHTML(norm["bidang"]);
+          const subbidang = escapeHTML(norm["sub-bidang"]);
+          const butiran = escapeHTML(norm["butiran perkhidmatan"]);
+          const picKad = escapeHTML(norm["pic kad"]);
+          const statusJawatan = ((norm["kebenaran untuk berkongsi maklumat jawatan"] || '').toLowerCase() === "benarkan")
+            ? escapeHTML(norm["status dalam syarikat"] || "-")
+            : "-";
+
+          const waText = encodeURIComponent(
+            "📌 Kad Perkhidmatan Penduduk Banjaria Court\n\n" +
+            "👤 Nama: " + nama + "\n" +
+            (company ? "🏢 Syarikat: " + company + "\n" : "") +
+            (telefon ? "📞 Telefon: " + telefon + "\n" : "") +
+            "📋 Status: " + statusJawatan + "\n" +
+            (bidang ? "📂 Bidang: " + bidang + "\n" : "") +
+            (subbidang ? "📁 Sub-bidang: " + subbidang + "\n" : "") +
+            (butiran ? "📝 Butiran: " + butiran + "\n" : "") +
+            (picKad ? "📎 Kad: " + picKad : "")
+          );
+
+          const html = `
+    <article class="bg-panel border border-gray-100 rounded-xl p-4 shadow-sm flex flex-col">
+    ${company ? `<div class="text-black font-extrabold text-xl uppercase tracking-wide mb-1">${company}</div>` : ''}
+    <h3 class="text-black font-bold text-lg">${nama}</h3>
+
+    ${telefon ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Telefon:</span> <span class="text-slate-700 ml-2">${telefon}</span></div>` : ''}
+
+    ${statusJawatan ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Status:</span> <span class="text-slate-700 ml-2">${statusJawatan}</span></div>` : `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Status:</span> <span class="text-slate-700 ml-2">-</span></div>`}
+
+    ${bidang ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Bidang:</span> <span class="text-slate-700 ml-2">${bidang}</span></div>` : ''}
+
+    ${subbidang ? `<div class="text-sm mt-2"><span class="inline-block bg-accent text-slate-900 font-semibold px-2 py-0.5 rounded-md">Sub-bidang:</span> <span class="text-slate-700 ml-2">${subbidang}</span></div>` : ''}
+
+    ${butiran ? `<p class="mt-3 text-slate-700 text-sm">${butiran}</p>` : ''}
+
+    <div class="mt-4 flex gap-2">
+      ${picKad ? `<a href="${picKad}" target="_blank" class="px-3 py-2 bg-accent text-slate-900 rounded-md text-sm font-semibold flex items-center gap-2 border border-accent/20">📎 Lihat Kad</a>` : ''}
+      <a href="https://api.whatsapp.com/send?text=${waText}" target="_blank" class="ml-auto px-3 py-2 bg-accent text-slate-900 rounded-md text-sm font-semibold flex items-center gap-2">📤 Hantar ke WhatsApp</a>
+    </div>
+    </article>
+`.trim();
+
+          return { bidang: norm["bidang"] || '', html };
+        }).filter(Boolean);
+
+        // populate bidang select
         const sel = document.getElementById("bidangSelect");
-        new Set(allCards.map(c => c.bidang).filter(b => b))
-          .forEach(b => sel.insertAdjacentHTML("beforeend",
-            `<option value="${b}">${b}</option>`));
+        const bidangSet = new Set(allCards.map(c => c.bidang).filter(Boolean));
+        [...bidangSet].sort().forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b; opt.textContent = b;
+          sel.appendChild(opt);
+        });
 
         renderCards("Semua");
       })
       .catch(e => console.error("Gagal muat kad:", e));
 
-    // Tapis & render
-    document.getElementById("bidangSelect")
-      .addEventListener("change", e => renderCards(e.target.value));
+    // filter listener
+    document.getElementById("bidangSelect").addEventListener("change", e => renderCards(e.target.value));
 
     function renderCards(filterBidang) {
       const dir = document.getElementById("directory");
       dir.innerHTML = "";
       const list = filterBidang === "Semua"
         ? allCards
-        : allCards.filter(c => c.bidang?.toLowerCase() === filterBidang.toLowerCase());
-      list.forEach(c => dir.insertAdjacentHTML("beforeend", c.html));
+        : allCards.filter(c => (c.bidang || '').toLowerCase() === (filterBidang || '').toLowerCase());
+
+      if (!list.length) {
+        dir.innerHTML = '<div class="col-span-full text-center text-slate-600 py-6">Tiada perkhidmatan ditemui untuk pilihan ini.</div>';
+        return;
+      }
+
+      list.forEach(c => {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = c.html;
+        dir.appendChild(wrapper.firstElementChild);
+      });
     }
 
-    // Isi link kongsi WhatsApp
+    // share page link to WhatsApp after DOM ready
     document.addEventListener("DOMContentLoaded", () => {
       const shareBtn = document.getElementById("shareLink");
       const pageUrl = window.location.href;
-      shareBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-        `Senarai Perkhidmatan Penduduk: ${pageUrl}`
-      )}`;
+      shareBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent('Senarai Perkhidmatan Penduduk: ' + pageUrl)}`;
     });
   </script>
 </body>
