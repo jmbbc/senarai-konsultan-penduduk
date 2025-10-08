@@ -1,0 +1,86 @@
+/* styles.css - custom styles for Senarai Perkhidmatan Penduduk Banjaria Court */
+
+/* Base font fallback; Inter dimuat dari Google Fonts */
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Visually hidden helper used for accessible labels */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Search highlight used by JS (matches Tailwind tone) */
+mark {
+  background-color: #FEF3C7; /* amber-100 */
+  color: #111827;            /* slate-900 */
+  padding: 0 .125rem;        /* mimic px-0.5 */
+  border-radius: .125rem;    /* rounded-sm */
+  line-height: inherit;
+}
+
+/* Small adjustments for card typography not handled by Tailwind classes */
+#directory article h3 {
+  line-height: 1.05;
+}
+
+/* Make inline labels (the accent pills) slightly taller and aligned */
+.inline-block.bg-accent {
+  line-height: 1;
+}
+
+/* Focus outlines for interactive elements to improve keyboard accessibility */
+a:focus, button:focus, input:focus, select:focus {
+  outline: 3px solid rgba(34,197,94,0.18); /* green-ish focus ring */
+  outline-offset: 2px;
+  border-radius: .375rem;
+}
+
+/* Slight visual polish for the directory container on very wide screens */
+@media (min-width: 1280px) {
+  #directory {
+    gap: 1rem;
+  }
+}
+
+/* Mobile spacing safety for max width container */
+@media (max-width: 640px) {
+  .max-w-4xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Utility: subtle disabled state for buttons when needed */
+.btn-disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Small print style used for fallback messages */
+.fallback-note {
+  color: #6B7280; /* slate-500 */
+  font-size: .95rem;
+}
+
+/* If you host font files locally, you can add @font-face rules here
+@font-face {
+  font-family: 'InterLocal';
+  src: url('/assets/fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+body { font-family: InterLocal, Inter, system-ui, ... }
+*/
