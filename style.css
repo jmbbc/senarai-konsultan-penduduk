@@ -34,6 +34,34 @@ mark {
   line-height: 1.05;
 }
 
+/* Clamp long text on cards */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Scrollable body for long descriptions */
+.scrollbox {
+  max-height: 8rem;
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+
+.scrollbox::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbox::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 999px;
+}
+
+.scrollbox::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 /* Make inline labels (the accent pills) slightly taller and aligned */
 .inline-block.bg-accent {
   line-height: 1;
