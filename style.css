@@ -125,8 +125,8 @@ main h2 { margin-bottom: 5px; font: 800 27px/1.2 "Manrope", sans-serif; letter-s
 .card-action { min-height: 39px; min-width: 0; padding: 0 10px; border: 1px solid #dce5f4; border-radius: 10px; background: #fff; color: #526280; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; cursor: pointer; }
 .card-action i { width: 15px; height: 15px; flex: 0 0 auto; }
 .card-action:hover { border-color: #a8c3f3; color: var(--brand); }
-.card-contact { flex: 1; background: var(--brand); border-color: var(--brand); color: #fff; }
-.card-contact:hover { background: var(--brand-dark); border-color: var(--brand-dark); color: #fff; }
+.card-contact { flex: 1; background: #16834a; border-color: #16834a; color: #fff; }
+.card-contact:hover { background: #116b3c; border-color: #116b3c; color: #fff; }
 .card-share { background: #f8faff; }
 .state-panel { margin-top: 18px; padding: 46px 20px; border: 1px solid var(--line); border-radius: 16px; background: white; text-align: center; }
 .state-icon { width: 48px; height: 48px; margin: 0 auto 12px; border-radius: 15px; background: var(--blue-wash); color: var(--brand); display: grid; place-items: center; }
