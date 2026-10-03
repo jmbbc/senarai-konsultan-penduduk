@@ -2,534 +2,329 @@
 <html lang="ms">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Senarai Perkhidmatan Penduduk Banjaria Court</title>
-
-  <!-- Google Font (Inter) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Tailwind via CDN -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1745c2" />
+  <meta name="description" content="Cari perkhidmatan dan kepakaran jiran di Banjaria Court." />
+  <title>Direktori Komuniti Banjaria Court</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            page: '#F6F7F3',
-            panel: '#EEF0EA',
-            accent: '#7EC49D',
-            'accent-strong': '#0E7C4B',
-            ink: '#0F172A',
-            muted: '#6B7280'
-          },
-          fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui']
-          },
-          boxShadow: {
-            card: '0 15px 40px rgba(0,0,0,0.06)'
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="style.css">
-  
+  <script>tailwind.config={theme:{extend:{colors:{page:'#f6f9ff',blueink:'#142451',brand:'#1745c2',skywash:'#e9f3ff',sun:'#f4c542'},fontFamily:{sans:['DM Sans','ui-sans-serif','system-ui'],display:['Manrope','DM Sans','sans-serif']}}}};</script>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="min-h-screen bg-page text-ink antialiased">
-  <div class="relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-accent/25 via-white to-panel/60"></div>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand-lockup" href="#top" aria-label="Banjaria Court, laman utama">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="house"></i><span></span></span>
+        <span><strong>Banjaria Court</strong><small>Direktori Komuniti</small></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Navigasi utama">
+        <a class="nav-active" href="#top">Utama</a>
+        <a href="#kategori">Kategori</a>
+        <a href="#direktori">Direktori</a>
+      </nav>
+      <a class="register-button" href="https://forms.gle/BsTZ2z81Q4XR8zHw6" target="_blank" rel="noopener noreferrer"><i data-lucide="plus"></i><span>Daftar perkhidmatan</span></a>
+    </div>
+  </header>
 
-    <header class="relative">
-      <div class="max-w-5xl mx-auto px-4 pt-10 pb-6">
-        <div class="flex flex-col gap-4">
-          <div class="inline-flex items-center gap-2 self-start bg-white/70 backdrop-blur px-3 py-1 rounded-full border border-white/60 text-xs font-semibold text-accent-strong shadow-sm">
-            🌱 Direktori komuniti Banjaria Court
-          </div>
-          <div class="space-y-3">
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-ink">Senarai Perkhidmatan Penduduk Banjaria Court</h1>
-            <p class="text-base text-slate-700 max-w-2xl leading-relaxed">Rujuk kepakaran jiran terdekat—pantau status terkini, cari mengikut bidang, dan kongsi kad terus ke WhatsApp.</p>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
-            <a href="https://forms.gle/BsTZ2z81Q4XR8zHw6" target="_blank" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-ink text-white font-semibold shadow-sm hover:shadow-md transition">
-              📝 Daftar Perkhidmatan
-            </a>
-            <a id="shareLink" href="#" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-accent text-ink font-semibold shadow-sm hover:bg-accent-strong/90 hover:text-white transition">
-              🔗 Kongsi via WhatsApp
-            </a>
-            <button id="copyLink" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-ink font-semibold shadow-sm hover:bg-slate-50 transition">
-              📋 Salin pautan
-            </button>
-          </div>
+  <nav class="mobile-shortcuts" aria-label="Pintasan direktori">
+    <a href="#searchInput" class="mobile-shortcut"><i data-lucide="search" aria-hidden="true"></i><span>Cari</span></a>
+    <button class="mobile-shortcut" id="categoryShortcut" type="button" aria-expanded="false" aria-controls="shortcutCategoryMenu"><i data-lucide="grid-2x2" aria-hidden="true"></i><span>Kategori</span><i class="shortcut-chevron" data-lucide="chevron-down" aria-hidden="true"></i></button>
+    <div class="shortcut-category-menu" id="shortcutCategoryMenu" aria-label="Senarai kategori pantas" hidden>
+      <p class="shortcut-menu-title">Pilih kategori</p>
+      <div class="shortcut-category-list" id="shortcutCategoryList"></div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-art" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> DIREKTORI KOMUNITI BANJARIA COURT</p>
+          <h1 id="hero-title">Jiran anda.<br /><em>Pakar anda.</em></h1>
+          <p class="hero-description">Temui perkhidmatan dan kepakaran dalam komuniti kita. Mudah dicari, dekat di hati.</p>
+          <form class="search-bar" id="searchForm" role="search">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <label class="sr-only" for="searchInput">Cari perkhidmatan</label>
+            <input id="searchInput" type="search" placeholder="Cari perkhidmatan, nama atau bidang…" autocomplete="off" />
+            <button type="submit">Cari</button>
+          </form>
+          <div class="hero-meta"><span class="live-dot"></span><span id="directoryMeta">Memuatkan senarai perkhidmatan…</span></div>
         </div>
       </div>
-    </header>
+      <div class="hero-swoosh" aria-hidden="true"></div>
+    </section>
 
-    <main class="relative max-w-5xl mx-auto px-4 pb-12">
-      <section class="bg-white/80 backdrop-blur border border-white/60 rounded-2xl shadow-card p-5 sm:p-6 -mt-4 mb-6">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
-          <div class="sm:col-span-2">
-            <div class="text-sm font-semibold text-slate-700">Jumlah Perkhidmatan Berdaftar</div>
-            <div id="jumlahPerkhidmatan" class="mt-1 text-3xl font-extrabold text-ink">—</div>
-            <div class="text-sm text-muted">Data dikemas kini terus dari borang komuniti.</div>
-          </div>
-          <div class="sm:justify-self-end">
-            <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-panel text-slate-700 text-sm border border-white/80">
-              ✅ Tapisan automatik rekod lulus
-            </div>
-          </div>
-        </div>
-      </section>
+    <section class="category-section page-shell" id="kategori" aria-labelledby="category-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">JELAJAHI KOMUNITI</p><h2 id="category-title">Cari ikut kategori</h2><p class="section-description">Pilih bidang untuk jumpa orang yang tepat.</p></div>
+        <a class="text-link" href="#direktori">Lihat semua <i data-lucide="arrow-right"></i></a>
+      </div>
+      <div class="category-grid" id="categoryGrid" aria-label="Kategori perkhidmatan"></div>
+      <div class="category-select-wrap">
+        <label for="bidangSelect">Tapis mengikut bidang</label>
+        <select id="bidangSelect" aria-label="Pilih bidang"><option value="Semua">Semua kategori</option></select>
+      </div>
+    </section>
 
-      <section class="bg-white border border-slate-100 rounded-2xl shadow-card p-4 sm:p-5 mb-8">
-        <div class="flex flex-col gap-3">
-          <div class="flex flex-col md:flex-row gap-3 md:items-center">
-            <div class="flex-1 flex items-center gap-2 bg-slate-50 rounded-lg border border-slate-200 px-3 py-2">
-              <label for="searchInput" class="sr-only">Cari perkhidmatan</label>
-              <span class="text-lg">🔍</span>
-              <input id="searchInput" type="search" class="flex-1 bg-transparent focus:outline-none" placeholder="Cari nama, syarikat, telefon, bidang, atau butiran..." />
-              <button id="clearSearch" class="text-sm text-muted hover:text-ink">Kosong</button>
-            </div>
-            <div class="flex items-center gap-2 text-sm text-muted">
-              <span id="searchCount">0 keputusan</span>
-            </div>
-          </div>
+    <section class="directory-section page-shell" id="direktori" aria-labelledby="directory-title">
+      <div class="directory-heading">
+        <div><p class="section-kicker">SOKONG JIRAN KITA</p><h2 id="directory-title">Penyedia perkhidmatan</h2></div>
+        <div class="directory-actions"><span id="searchCount" aria-live="polite">Memuatkan…</span><a id="shareLink" class="share-page" href="#" target="_blank" rel="noopener noreferrer"><i data-lucide="share-2"></i><span>Kongsi direktori</span></a><button id="copyLink" class="share-page" type="button"><i data-lucide="copy"></i><span>Salin pautan</span></button></div>
+      </div>
+      <div id="activeFilter" class="active-filter" hidden></div>
+      <div id="directory" class="directory-grid" aria-live="polite"></div>
+      <div id="loadingState" class="directory-grid" aria-label="Memuatkan perkhidmatan"></div>
+      <div id="errorState" class="state-panel" hidden></div>
+      <div id="emptyState" class="state-panel" hidden></div>
+      <div class="directory-footer"><span class="live-dot"></span>Maklumat dikongsi oleh penduduk Banjaria Court.</div>
+    </section>
 
-          <div class="flex flex-col lg:flex-row gap-3 lg:items-center">
-            <div class="flex items-center gap-2">
-              <label for="bidangSelect" class="text-sm text-muted">Bidang:</label>
-              <select id="bidangSelect" class="w-56 bg-white border border-slate-200 text-ink p-2 rounded-md shadow-sm">
-                <option value="Semua">Semua</option>
-              </select>
-            </div>
-            <div id="chipFilters" class="flex flex-wrap gap-2 text-sm"></div>
-            <div class="lg:ml-auto flex gap-2">
-              <button id="resetFilters" class="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-md hover:bg-slate-100">Set semula tapis</button>
-            </div>
-          </div>
-        </div>
-      </section>
+    <section class="join-banner page-shell" id="tentang">
+      <div class="join-icon"><i data-lucide="heart-handshake"></i></div>
+      <div><p class="section-kicker">KOMUNITI KITA</p><h2>Anda menawarkan perkhidmatan?</h2><p>Sertai direktori dan kenalkan kepakaran anda kepada jiran.</p></div>
+      <a class="register-button" href="https://forms.gle/BsTZ2z81Q4XR8zHw6" target="_blank" rel="noopener noreferrer">Daftar sekarang <i data-lucide="arrow-up-right"></i></a>
+    </section>
+  </main>
 
-      <section class="mb-10">
-        <div id="directory" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
-        <div id="loadingState" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
-        <div id="errorState" class="hidden"></div>
-        <div id="emptyState" class="hidden"></div>
-      </section>
-
-      <section class="bg-panel border border-slate-100 rounded-2xl p-5 text-sm text-slate-700 shadow-sm">
-        <div class="font-semibold text-ink mb-1">Tentang direktori ini</div>
-        <p>Direktori ini dikumpul daripada borang komuniti. Hanya rekod berstatus lulus dipaparkan. Guna carian dan tapis bidang untuk jumpa kepakaran yang tepat, atau kongsi kad terus ke WhatsApp.</p>
-      </section>
-    </main>
-  </div>
+  <footer class="site-footer"><span>Banjaria Court · Direktori Komuniti</span><a href="#top">Kembali ke atas ↑</a></footer>
 
   <script>
-    function escapeHTML(str){
-      if(!str) return '';
-      return String(str)
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;')
-        .replace(/'/g,'&#39;');
+    const CATEGORY_GROUPS = [
+      { label: 'Makanan & Bakeri', icon: 'utensils' },
+      { label: 'Hartanah & Penginapan', icon: 'house' },
+      { label: 'Khidmat Rumah & Pembaikan', icon: 'wrench' },
+      { label: 'Kenderaan & Pengangkutan', icon: 'car-front' },
+      { label: 'Pendidikan & Kelas Kemahiran', icon: 'graduation-cap' },
+      { label: 'Kewangan, Insurans & Guaman', icon: 'scale' },
+      { label: 'Perniagaan & Khidmat Profesional', icon: 'briefcase-business' },
+      { label: 'Teknologi & Kreatif', icon: 'laptop' },
+      { label: 'Kedai, Runcit & Produk', icon: 'shopping-bag' },
+      { label: 'Haiwan & Penjagaan Haiwan', icon: 'paw-print' },
+      { label: 'Pertanian & Hasil Tani', icon: 'sprout' },
+      { label: 'Kesihatan & Kecantikan', icon: 'heart-pulse' },
+      { label: 'Semua kategori', icon: 'grid-2x2' }
+    ];
+
+    const RAW_CATEGORY_MAP = [
+      ['makanan, katering & bakeri', 'Makanan & Bakeri'],
+      ['hartanah & perkhidmatan rumah', 'Hartanah & Penginapan'],
+      ['pembaikan, elektrik & paip', 'Khidmat Rumah & Pembaikan'],
+      ['automotif & pengangkutan', 'Kenderaan & Pengangkutan'],
+      ['pendidikan & latihan', 'Pendidikan & Kelas Kemahiran'],
+      ['hiburan, sukan & kelas kemahiran', 'Pendidikan & Kelas Kemahiran'],
+      ['kewangan, insurans & undang', 'Kewangan, Insurans & Guaman'],
+      ['perniagaan & profesional', 'Perniagaan & Khidmat Profesional'],
+      ['it, elektronik & perkhidmatan web', 'Teknologi & Kreatif'],
+      ['pembekalan & runcit', 'Kedai, Runcit & Produk'],
+      ['haiwan peliharaan & penjagaan haiwan', 'Haiwan & Penjagaan Haiwan'],
+      ['pertanian, penternakan & perkhidmatan luar', 'Pertanian & Hasil Tani'],
+      ['kecantikan & kesihatan', 'Kesihatan & Kecantikan']
+    ];
+
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+    }
+    function normalizeText(value) { return String(value ?? '').toLocaleLowerCase('ms').trim(); }
+    function valueFrom(row, keys) { for (const key of keys) if (row[key]) return row[key]; return ''; }
+    function showIcon(name, size = 18) { return `<i data-lucide="${name}" width="${size}" height="${size}" aria-hidden="true"></i>`; }
+    function categoryIconFor(label) {
+      return CATEGORY_GROUPS.find(group => group.label === label)?.icon || 'briefcase-business';
+    }
+    function categoryToneFor(label) {
+      const index = CATEGORY_GROUPS.findIndex(group => group.label === label);
+      return index < 0 || index >= 12 ? 6 : index;
     }
 
-    function normalizeText(s){ return (s || '').toString().toLowerCase(); }
-
-    function escapeRegex(str){
-      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    function classifyService(rawCategory, details, title = '') {
+      const raw = normalizeText(rawCategory);
+      const selectedCategory = CATEGORY_GROUPS.find(group => group.label !== 'Semua kategori' && normalizeText(group.label) === raw);
+      if (selectedCategory) return selectedCategory.label;
+      const text = normalizeText(`${title} ${details}`);
+      if (/katering|catering|bak(e|er)y|kuih|kek|dessert|popia|kepok|ikan sungai|frozen food|homebased kitchen|makanan homemade/.test(text) || (/makanan|minuman/.test(text) && !/kejuruteraan|engineering|pembuatan pelbagai produk|pemprosesan.*produk/.test(text) && /menjual|jualan|tempahan|menyediakan makanan|makanan & minuman/.test(text))) return 'Makanan & Bakeri';
+      if (/pet sitter|pet taxi|kucing|anjing|haiwan peliharaan|grooming kucing|boarding kucing/.test(text)) return 'Haiwan & Penjagaan Haiwan';
+      if (/pertanian|agro|penternakan|ternakan|ladang|agriculture|farm service/.test(text)) return 'Pertanian & Hasil Tani';
+      if (/platform jualan kereta|jualan kereta baru|trade.?in kereta|kereta baru|sewa kereta|bengkel|motosikal|motorcycle|servis kenderaan|baiki motor|pengangkutan murid|servis minyak enjin|sistem brek|brake|sprocket|transmisi/.test(text)) return 'Kenderaan & Pengangkutan';
+      if (/pengurusan perniagaan|business management/.test(text)) return 'Perniagaan & Khidmat Profesional';
+      if (/takaful|insurans|insurance|hibah|wasiat|peguam|lawyer|undang.?undang|syariah|perundangan|perakaunan|accounting|bookkeep|percukaian|cukai|tax preparation|pelaburan|investment|pembiayaan|pinjaman|pusaka|amanah/.test(text)) return 'Kewangan, Insurans & Guaman';
+      if (/homestay|sewa rumah|hartanah|perunding hartanah|real estate|realty|realtor|jual.?beli rumah|property agent/.test(text)) return 'Hartanah & Penginapan';
+      if (/alat tulis|pembekal|supplier|pengedar|runcit|aksesori|anting|bouquet|baju budak|collections|jualan produk|jual produk|trading/.test(text)) return 'Kedai, Runcit & Produk';
+      if (/occupational safety|workplace risk|safety documents|technical advisory|juruukur bahan|quantity surveyor|geologi|translator|translation|penterjemah|company secretary|setiausaha syarikat|pengurusan syarikat|business management|quality management|\bqms\b|landscape architecture|kejuruteraan|engineering|perunding|konsultan|consultant/.test(text)) return 'Perniagaan & Khidmat Profesional';
+      if (/tuisyen|tuition|mengaji|kelas |kursus|latihan|training|sekolah memandu|driving school|kelas renang|home tutor|tutor/.test(text)) return 'Pendidikan & Kelas Kemahiran';
+      if (/paip|plumb|pendawaian|elektrik|tukang paip|renovation|renovasi|kemas rumah|pembersihan|cleaning|lipat baju|furniture|interior design|interior designer|mesin basuh|peti ais|repair iron/.test(text)) return 'Khidmat Rumah & Pembaikan';
+      if (/automotif|kereta|motosikal|motorcycle|roadtax|tayar|hantar ke rumah/.test(text)) return 'Kenderaan & Pengangkutan';
+      if (/laptop|desktop|komputer|computer|iphone|android|web development|web apps|graphic design|reka bentuk grafik|printing|percetakan|calligraphy|kaligrafi|audio|sound system|recording|mixing|studio muzik|graphic|digital|it, elektronik/.test(text)) return 'Teknologi & Kreatif';
+      if (/kecantikan|beauty|salon|gunting rambut|barber|kesihatan|urut|massage|facial|skincare/.test(text)) return 'Kesihatan & Kecantikan';
+      return RAW_CATEGORY_MAP.find(([category]) => raw.includes(category))?.[1] || 'Perniagaan & Khidmat Profesional';
     }
 
-    function highlightHTML(text, query){
-      if(!query) return escapeHTML(text);
-      try {
-        const q = escapeRegex(query);
-        const re = new RegExp(`(${q})`, 'ig');
-        return escapeHTML(text).replace(re, '<mark class="bg-yellow-200 text-ink rounded-sm px-0.5">$1</mark>');
-      } catch(e) {
-        return escapeHTML(text);
-      }
-    }
-
-    let searchIndex = [];
     let allCards = [];
-    let bidangSet = new Set();
-    let isLoading = true;
+    let selectedGroup = 'Semua kategori';
+    const byId = id => document.getElementById(id);
 
-    function buildSearchIndex(cards){
-      searchIndex = cards.map(c => {
-        const f = c.fields || {};
-        const blob = [
-          f.nama, f.company, f.telefon, f.bidang, f.subbidang, f.butiran
-        ].map(x => normalizeText(x)).join(' | ');
-        return { card: c, blob };
+    function selectCategory(label) {
+      selectedGroup = label;
+      byId('bidangSelect').value = label;
+      byId('shortcutCategoryMenu').hidden = true;
+      byId('categoryShortcut').setAttribute('aria-expanded', 'false');
+      updateDirectory();
+      byId('direktori').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    byId('categoryShortcut').addEventListener('click', () => {
+      const menu = byId('shortcutCategoryMenu');
+      const willOpen = menu.hidden;
+      menu.hidden = !willOpen;
+      byId('categoryShortcut').setAttribute('aria-expanded', String(willOpen));
+    });
+
+    function drawCategories() {
+      const counts = CATEGORY_GROUPS.map(group => group.label === 'Semua kategori'
+        ? allCards.length
+        : allCards.filter(card => card.fields.bidang === group.label).length);
+      byId('shortcutCategoryList').innerHTML = CATEGORY_GROUPS.map((group, index) => `
+        <button class="shortcut-category-option${selectedGroup === group.label ? ' selected' : ''}" type="button" data-shortcut-category="${escapeHTML(group.label)}" aria-pressed="${selectedGroup === group.label}">
+          <span>${escapeHTML(group.label)}</span><small>${counts[index]}</small>
+        </button>`).join('');
+      byId('shortcutCategoryList').querySelectorAll('[data-shortcut-category]').forEach(button => button.addEventListener('click', () => selectCategory(button.dataset.shortcutCategory)));
+      byId('categoryGrid').innerHTML = CATEGORY_GROUPS.map((group, index) => `
+        <button class="category-tile${selectedGroup === group.label ? ' selected' : ''}" type="button" data-category="${escapeHTML(group.label)}" aria-pressed="${selectedGroup === group.label}">
+          <span class="category-icon">${showIcon(group.icon, 23)}</span>
+          <span class="category-name">${escapeHTML(group.label)}</span>
+          <span class="category-count">${counts[index]} perkhidmatan</span>
+        </button>`).join('');
+      byId('categoryGrid').querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => {
+        selectCategory(button.dataset.category);
+      }));
+      byId('categoryGrid').querySelectorAll('[data-category]').forEach(button => {
+        const selected = button.dataset.category === selectedGroup;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
       });
-      updateSearchCount(cards.length);
+      if (window.lucide) lucide.createIcons();
     }
 
-    function initSearchIndex(){
-      buildSearchIndex(allCards);
-    }
-
-    function showSkeleton(count = 6){
-      const wrap = document.getElementById('loadingState');
-      const dir = document.getElementById('directory');
-      wrap.innerHTML = '';
-      dir.innerHTML = '';
-      const card = `
-        <div class="animate-pulse bg-white border border-slate-100 rounded-xl p-4 shadow-sm space-y-3">
-          <div class="h-3 w-1/3 bg-slate-200 rounded"></div>
-          <div class="h-4 w-2/3 bg-slate-200 rounded"></div>
-          <div class="h-3 w-1/2 bg-slate-200 rounded"></div>
-          <div class="h-20 w-full bg-slate-100 rounded"></div>
-          <div class="flex gap-2">
-            <div class="h-9 w-24 bg-slate-200 rounded"></div>
-            <div class="h-9 w-28 bg-slate-200 rounded"></div>
-          </div>
-        </div>`;
-      for(let i=0;i<count;i++){
-        const div = document.createElement('div');
-        div.innerHTML = card;
-        wrap.appendChild(div.firstElementChild);
-      }
-    }
-
-    function hideSkeleton(){
-      const wrap = document.getElementById('loadingState');
-      if (wrap) wrap.innerHTML = '';
-    }
-
-    function renderEmptyState(show, reason){
-      const el = document.getElementById('emptyState');
-      el.classList.toggle('hidden', !show);
-      el.innerHTML = show ? `
-        <div class="col-span-full bg-white border border-slate-100 rounded-xl p-6 text-center shadow-sm">
-          <div class="text-lg font-semibold text-ink mb-1">Tiada perkhidmatan ditemui</div>
-          <div class="text-sm text-muted mb-3">${escapeHTML(reason || 'Cuba ubah carian atau tapis bidang.')}</div>
-          <button id="emptyReset" class="px-3 py-2 rounded-md bg-slate-50 border border-slate-200 text-sm">Kosongkan carian</button>
-        </div>` : '';
-      if (show) {
-        const btn = document.getElementById('emptyReset');
-        if (btn) btn.onclick = () => {
-          const input = document.getElementById('searchInput');
-          if (input) input.value = '';
-          const bidangSelect = document.getElementById('bidangSelect');
-          if (bidangSelect) bidangSelect.value = 'Semua';
-          performSearch('', 'Semua');
-        };
-      }
-    }
-
-    function renderErrorState(err){
-      const el = document.getElementById('errorState');
-      el.classList.remove('hidden');
-      el.innerHTML = `
-        <div class="col-span-full bg-white border border-red-100 rounded-xl p-6 text-center shadow-sm">
-          <div class="text-lg font-semibold text-red-700 mb-1">Gagal memuat data</div>
-          <div class="text-sm text-muted mb-3">${escapeHTML(err?.message || 'Sila cuba lagi sebentar.')}</div>
-          <button id="retryFetch" class="px-3 py-2 rounded-md bg-red-50 border border-red-200 text-sm">Cuba semula</button>
-        </div>`;
-      const btn = document.getElementById('retryFetch');
-      if (btn) btn.onclick = () => window.location.reload();
-    }
-
-    function performSearch(query, bidangFilter){
-      const q = normalizeText(query).trim();
-      const dir = document.getElementById('directory');
-      dir.innerHTML = '';
-      const results = searchIndex.filter(item => {
-        if (bidangFilter && bidangFilter !== 'Semua') {
-          const cardBidang = normalizeText(item.card.fields.bidang || '');
-          if (cardBidang !== bidangFilter.toLowerCase()) return false;
-        }
-        if (!q) return true;
-        return item.blob.indexOf(q) !== -1;
-      }).map(i => i.card);
-
-      if (!results.length) {
-        renderEmptyState(true, 'Tiada padanan untuk carian atau tapis semasa.');
-        updateSearchCount(0);
-        return;
-      }
-
-      renderEmptyState(false);
-
-      results.forEach(c => {
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = c.html;
-        if (q) {
-          const walker = document.createTreeWalker(wrapper, NodeFilter.SHOW_TEXT, null, false);
-          const nodes = [];
-          while(walker.nextNode()) nodes.push(walker.currentNode);
-          nodes.forEach(tnode => {
-            const parent = tnode.parentNode;
-            if (!parent) return;
-            const newHTML = highlightHTML(tnode.textContent, q);
-            if (newHTML !== escapeHTML(tnode.textContent)) {
-              const span = document.createElement('span');
-              span.innerHTML = newHTML;
-              parent.replaceChild(span, tnode);
-            }
-          });
-        }
-        dir.appendChild(wrapper.firstElementChild);
+    function currentResults() {
+      const query = normalizeText(byId('searchInput').value);
+      return allCards.filter(card => {
+        if (selectedGroup !== 'Semua kategori' && card.fields.bidang !== selectedGroup) return false;
+        if (!query) return true;
+        return Object.values(card.fields).some(value => normalizeText(value).includes(query));
       });
-
-      updateSearchCount(results.length);
     }
 
-    function updateSearchCount(n){
-      const el = document.getElementById('searchCount');
-      if (!el) return;
-      el.textContent = `${n} keputusan`;
+    function updateDirectory() {
+      const results = currentResults();
+      byId('directory').innerHTML = results.map(card => card.html).join('');
+      byId('searchCount').textContent = `${results.length} perkhidmatan`;
+      const active = byId('activeFilter');
+      if (selectedGroup !== 'Semua kategori') {
+        active.hidden = false;
+        active.innerHTML = `<span>${escapeHTML(selectedGroup)}</span><button type="button" id="clearCategory" aria-label="Padam pilihan kategori">${showIcon('x', 15)}</button>`;
+        byId('clearCategory').addEventListener('click', () => { selectedGroup = 'Semua kategori'; byId('bidangSelect').value = selectedGroup; updateDirectory(); });
+      } else active.hidden = true;
+      byId('emptyState').hidden = results.length > 0;
+      if (!results.length) byId('emptyState').innerHTML = `<div class="state-icon">${showIcon('search-x', 24)}</div><h3>Tiada padanan ditemui</h3><p>Cuba kata carian atau kategori yang lain.</p><button type="button" class="reset-button" id="resetSearch">Padam tapisan</button>`;
+      const reset = byId('resetSearch');
+      if (reset) reset.onclick = () => { byId('searchInput').value = ''; selectedGroup = 'Semua kategori'; byId('bidangSelect').value = selectedGroup; updateDirectory(); };
+      byId('categoryGrid').querySelectorAll('[data-category]').forEach(button => {
+        const selected = button.dataset.category === selectedGroup;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      byId('shortcutCategoryList').querySelectorAll('[data-shortcut-category]').forEach(button => {
+        const selected = button.dataset.shortcutCategory === selectedGroup;
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      byId('directory').querySelectorAll('[data-copy]').forEach(button => button.addEventListener('click', async () => {
+        const payload = decodeURIComponent(button.dataset.copy);
+        try {
+          if (navigator.share) await navigator.share({ title: 'Kad Perkhidmatan Banjaria Court', text: payload });
+          else { await navigator.clipboard.writeText(payload); button.querySelector('span').textContent = 'Disalin'; setTimeout(() => { button.querySelector('span').textContent = 'Kongsi'; }, 1600); }
+        } catch (error) { if (error.name !== 'AbortError') button.querySelector('span').textContent = 'Gagal'; }
+      }));
+      if (window.lucide) lucide.createIcons();
     }
 
-    function debounce(fn, wait){
-      let t;
-      return function(...args){
-        clearTimeout(t);
-        t = setTimeout(() => fn.apply(this, args), wait);
+    function createCard(row) {
+      const normalized = {};
+      Object.entries(row || {}).forEach(([key, value]) => { normalized[key.trim().toLocaleLowerCase('ms')] = value == null ? '' : String(value).trim(); });
+      if (normalizeText(normalized['status paparan']) !== 'lulus' || !valueFrom(normalized, ['nama', 'nama penuh'])) return null;
+      const company = valueFrom(normalized, ['nama syarikat', 'syarikat']);
+      const name = valueFrom(normalized, ['nama', 'nama penuh']);
+      const phone = valueFrom(normalized, ['nombor telefon syarikat', 'telefon', 'telefon bimbit']);
+      const bidangAsal = normalized['bidang'] || '';
+      const subbidangRaw = valueFrom(normalized, ['sub-bidang', 'sub bidang']);
+      const subbidang = normalizeText(subbidangRaw) === '#n/a' ? '' : subbidangRaw;
+      const details = valueFrom(normalized, ['butiran perkhidmatan', 'butiran', 'butiran_perkhidmatan']);
+      const bidang = classifyService(bidangAsal, details, valueFrom(normalized, ['nama syarikat', 'syarikat', 'nama', 'nama penuh']));
+      const cardLink = valueFrom(normalized, ['pic kad', 'kad']);
+      const mayShowRole = normalizeText(normalized['kebenaran untuk berkongsi maklumat jawatan']) === 'benarkan';
+      const role = mayShowRole ? valueFrom(normalized, ['status dalam syarikat', 'jawatan']) : '';
+      const searchFields = { company, nama: name, telefon: phone, bidang, 'bidang asal': bidangAsal, subbidang, butiran: details };
+      const safeName = escapeHTML(name);
+      const safeCompany = escapeHTML(company);
+      const safeDetails = escapeHTML(details);
+      const fullDetailsControl = details.length > 170 ? `<details class="service-more"><summary>Lihat butiran penuh</summary><p>${safeDetails}</p></details>` : '';
+      const waText = encodeURIComponent(`📌 Kad Perkhidmatan Penduduk Banjaria Court\n\n👤 Nama: ${name}\n${company ? `🏢 Syarikat: ${company}\n` : ''}${phone ? `📞 Telefon: ${phone}\n` : ''}${mayShowRole && role ? `📋 Jawatan: ${role}\n` : ''}${bidang ? `📂 Bidang: ${bidang}\n` : ''}${subbidang ? `📁 Sub-bidang: ${subbidang}\n` : ''}${details ? `📝 Butiran: ${details}\n` : ''}`);
+      const phoneCandidate = phone.split(/[|/;,]/).map(part => part.trim()).filter(Boolean).sort((a, b) => Number(/^0?1\d/.test(b)) - Number(/^0?1\d/.test(a)))[0] || phone;
+      let phoneDigits = phoneCandidate.replace(/\D/g, '');
+      if (phoneDigits.startsWith('0')) phoneDigits = `6${phoneDigits}`;
+      const contactHref = phoneDigits.length >= 9 ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent('Salam, saya jumpa perkhidmatan anda dalam Direktori Komuniti Banjaria Court.')}` : `https://api.whatsapp.com/send?text=${waText}`;
+      let safeCardLink = '';
+      try { const url = new URL(cardLink); if (['https:', 'http:'].includes(url.protocol)) safeCardLink = url.href; } catch {}
+      const actions = `${safeCardLink ? `<a class="card-action card-view" href="${escapeHTML(safeCardLink)}" target="_blank" rel="noopener noreferrer">${showIcon('contact-round')}<span>Lihat kad</span></a>` : ''}<a class="card-action card-contact" href="${contactHref}" target="_blank" rel="noopener noreferrer">${showIcon('message-circle')}<span>${phoneDigits.length >= 9 ? 'Hubungi WhatsApp' : 'Kongsi di WhatsApp'}</span></a><button class="card-action card-share" type="button" data-copy="${waText}">${showIcon('share-2')}<span>Kongsi</span></button>`;
+      return {
+        fields: searchFields,
+        html: `<article class="service-card category-tone-${categoryToneFor(bidang)}"><div class="card-topline"><div class="card-category-heading"><span class="card-category-icon">${showIcon(categoryIconFor(bidang))}</span><span class="category-label">${escapeHTML(bidang || 'Perkhidmatan komuniti')}</span></div>${showIcon('arrow-up-right', 16)}</div>${safeCompany ? `<h3>${safeCompany}</h3>` : ''}<p class="provider-name">${safeName}</p>${role ? `<p class="provider-role">${escapeHTML(role)}</p>` : ''}${phone ? `<p class="provider-phone">${showIcon('phone', 15)}<a href="tel:${escapeHTML(phoneCandidate.replace(/[^0-9+]/g, ''))}">${escapeHTML(phone)}</a></p>` : ''}<p class="service-description">${safeDetails || '<span class="details-missing">Hubungi untuk maklumat lanjut.</span>'}</p>${fullDetailsControl}${subbidang ? `<p class="service-subcategory">${escapeHTML(subbidang)}</p>` : ''}<div class="card-actions${safeCardLink ? ' has-card-link' : ''}">${actions}</div></article>`
       };
     }
 
-    function renderCards(filterBidang) {
-      const dir = document.getElementById('directory');
-      dir.innerHTML = '';
-      const list = filterBidang === 'Semua'
-        ? allCards
-        : allCards.filter(c => (c.bidang || '').toLowerCase() === (filterBidang || '').toLowerCase());
-
-      if (!list.length) {
-        renderEmptyState(true, 'Tiada perkhidmatan ditemui untuk pilihan ini.');
-        return;
-      }
-
-      renderEmptyState(false);
-
-      list.forEach(c => {
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = c.html;
-        dir.appendChild(wrapper.firstElementChild);
-      });
-    }
-
-    function populateChips(){
-      const chipWrap = document.getElementById('chipFilters');
-      if (!chipWrap) return;
-      chipWrap.innerHTML = '';
-      const bidangArr = [...bidangSet].sort().slice(0, 6);
-      bidangArr.forEach(b => {
-        const btn = document.createElement('button');
-        btn.className = 'px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 text-ink hover:bg-accent/20 text-sm';
-        btn.textContent = b;
-        btn.onclick = () => {
-          const sel = document.getElementById('bidangSelect');
-          if (sel) sel.value = b;
-          const input = document.getElementById('searchInput');
-          const q = input ? input.value : '';
-          performSearch(q, b);
-        };
-        chipWrap.appendChild(btn);
-      });
+    function setLoading(show) { byId('loadingState').hidden = !show; if (show) byId('loadingState').innerHTML = Array.from({ length: 6 }, () => '<div class="skeleton-card"><span></span><span></span><span></span></div>').join(''); }
+    function setError(error) {
+      byId('errorState').hidden = false;
+      byId('errorState').innerHTML = `<div class="state-icon">${showIcon('cloud-off', 24)}</div><h3>Senarai belum dapat dimuatkan</h3><p>${escapeHTML(error.message || 'Sila cuba sebentar lagi.')}</p><button type="button" class="reset-button" onclick="window.location.reload()">Cuba semula</button>`;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const input = document.getElementById('searchInput');
-      const clearBtn = document.getElementById('clearSearch');
-      const bidangSelect = document.getElementById('bidangSelect');
-      const resetFilters = document.getElementById('resetFilters');
-      const copyLink = document.getElementById('copyLink');
+      byId('directory').querySelectorAll('[data-copy]').forEach(button => button.addEventListener('click', async () => {
+        const payload = decodeURIComponent(button.dataset.copy);
+        try {
+          if (navigator.share) await navigator.share({ title: 'Kad Perkhidmatan Banjaria Court', text: payload });
+          else { await navigator.clipboard.writeText(payload); button.querySelector('span').textContent = 'Disalin'; setTimeout(() => { button.querySelector('span').textContent = 'Kongsi'; }, 1600); }
+        } catch (error) { if (error.name !== 'AbortError') button.querySelector('span').textContent = 'Gagal'; }
+      }));
+      if (window.lucide) lucide.createIcons();
+      const searchInput = byId('searchInput');
+      byId('searchForm').addEventListener('submit', event => { event.preventDefault(); updateDirectory(); byId('direktori').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      searchInput.addEventListener('input', updateDirectory);
+      byId('bidangSelect').addEventListener('change', () => { selectedGroup = byId('bidangSelect').value; updateDirectory(); });
+      byId('shareLink').href = `https://api.whatsapp.com/send?text=${encodeURIComponent('Direktori Perkhidmatan Penduduk Banjaria Court: ' + window.location.href)}`;
+      setLoading(true);
 
-      showSkeleton(6);
-
-      const doSearch = () => {
-        const bidangVal = bidangSelect ? bidangSelect.value : 'Semua';
-        performSearch(input.value, bidangVal);
-      };
-
-      const debouncedSearch = debounce(doSearch, 200);
-      if (input) input.addEventListener('input', debouncedSearch);
-      if (bidangSelect) bidangSelect.addEventListener('change', debouncedSearch);
-
-      if (clearBtn) clearBtn.addEventListener('click', () => {
-        if (!input) return;
-        input.value = '';
-        input.focus();
-        debouncedSearch();
-      });
-
-      if (resetFilters) resetFilters.addEventListener('click', () => {
-        if (input) input.value = '';
-        if (bidangSelect) bidangSelect.value = 'Semua';
-        performSearch('', 'Semua');
-      });
-
-      if (input) {
-        input.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') { input.value = ''; debouncedSearch(); }
-          if (e.key === 'Enter') {
-            const firstAnchor = document.querySelector('#directory a');
-            if (firstAnchor) firstAnchor.focus();
-          }
-        });
-      }
-
-      if (copyLink) {
-        copyLink.addEventListener('click', async () => {
-          const url = window.location.href;
-          try {
-            await navigator.clipboard.writeText(url);
-            copyLink.textContent = '✔️ Pautan disalin';
-            setTimeout(() => copyLink.textContent = '📋 Salin pautan', 1500);
-          } catch(e) {
-            copyLink.textContent = 'Salin gagal';
-            setTimeout(() => copyLink.textContent = '📋 Salin pautan', 1500);
-          }
-        });
-      }
-
-      // Statistik CSV URL (anda sudah publish CSV)
-      const statistikUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaIC8vSqefzEVD6ndgQecCNLOb-mNdCtUZMAC_ojDvgDD-mCAnPBVgdLfYlUW7ehK73e8-1KIl4AKZ/pub?gid=2034381075&single=true&output=csv";
-
-      fetch(statistikUrl)
-        .then(r => { if(!r.ok) throw new Error('Gagal muat statistik'); return r.text(); })
-        .then(csvText => {
-          const lines = csvText.trim().split(/\r?\n/);
-          function extractFromLine(line) {
-            const cols = line.split(',');
-            return cols.length > 1 ? cols[1].trim() : '';
-          }
-          let value = extractFromLine(lines[0]);
-          if (!value && lines.length > 1) value = extractFromLine(lines[1]);
-          if (!value) {
-            const found = csvText.match(/,?\s*(\d{1,})\s*(?:,|\r?\n|$)/);
-            value = found ? found[1] : '0';
-          }
-          document.getElementById('jumlahPerkhidmatan').textContent = value || '0';
-        })
-        .catch(err => {
-          console.warn(err);
-          document.getElementById('jumlahPerkhidmatan').textContent = '0';
-        });
-
-      const dataUrl = "https://script.google.com/macros/s/AKfycbyIDMuRP2Ozt_lx4V_wWYEwPmk3zIhr5LjxFAUzsrdv6E2fiVjEFpLhXmmYh84IzE5ROA/exec";
-
-      fetch(dataUrl)
-        .then(r => {
-          if (!r.ok) throw new Error('Gagal dapatkan data');
-          return r.json();
-        })
+      fetch('https://script.google.com/macros/s/AKfycbyIDMuRP2Ozt_lx4V_wWYEwPmk3zIhr5LjxFAUzsrdv6E2fiVjEFpLhXmmYh84IzE5ROA/exec')
+        .then(response => { if (!response.ok) throw new Error('Gagal mendapatkan data komuniti.'); return response.json(); })
         .then(data => {
-          isLoading = false;
-          hideSkeleton();
-          allCards = (data || []).map(row => {
-            const norm = {};
-            Object.keys(row || {}).forEach(k => {
-              norm[k.trim().toLowerCase()] = row[k] != null ? String(row[k]).trim() : '';
-            });
-
-            if ((norm['status paparan'] || '').toLowerCase() !== 'lulus') return null;
-            if (!norm['nama']) return null;
-
-            const companyRaw = norm['nama syarikat'] || norm['syarikat'] || '';
-            const namaRaw = norm['nama'] || norm['nama penuh'] || '';
-            const telefonRaw = norm['nombor telefon syarikat'] || norm['telefon'] || norm['telefon bimbit'] || '';
-            const bidangRaw = norm['bidang'] || '';
-            const subbidangRaw = norm['sub-bidang'] || norm['sub bidang'] || '';
-            const butiranRaw = (norm['butiran perkhidmatan'] || norm['butiran'] || norm['butiran_perkhidmatan'] || '').trim();
-            const picKadRaw = norm['pic kad'] || norm['kad'] || '';
-            const kebenaranRaw = (norm['kebenaran untuk berkongsi maklumat jawatan'] || '').toLowerCase();
-            const statusDalamSyarikatRaw = norm['status dalam syarikat'] || norm['jawatan'] || '';
-
-            const company = escapeHTML(companyRaw);
-            const nama = escapeHTML(namaRaw);
-            const telefon = escapeHTML(telefonRaw);
-            const bidang = escapeHTML(bidangRaw);
-            const subbidang = escapeHTML(subbidangRaw);
-            const butiran = escapeHTML(butiranRaw);
-            const picKad = escapeHTML(picKadRaw);
-            const statusJawatan = (kebenaranRaw === 'benarkan') ? escapeHTML(statusDalamSyarikatRaw || '-') : '-';
-
-            const waText = encodeURIComponent(
-              "📌 Kad Perkhidmatan Penduduk Banjaria Court\n\n" +
-              "👤 Nama: " + namaRaw + "\n" +
-              (companyRaw ? "🏢 Syarikat: " + companyRaw + "\n" : "") +
-              (telefonRaw ? "📞 Telefon: " + telefonRaw + "\n" : "") +
-              "📋 Status: " + statusJawatan + "\n" +
-              (bidangRaw ? "📂 Bidang: " + bidangRaw + "\n" : "") +
-              (subbidangRaw ? "📁 Sub-bidang: " + subbidangRaw + "\n" : "") +
-              (butiranRaw ? "📝 Butiran: " + butiranRaw + "\n" : "") +
-              (picKadRaw ? "📎 Kad: " + picKadRaw : "")
-            );
-
-            const html = `
-<article class="group bg-white border border-slate-100 rounded-xl p-4 shadow-sm flex flex-col gap-3 hover:shadow-card hover:-translate-y-0.5 transition">
-  <div class="flex flex-col sm:flex-row gap-3 sm:items-start">
-    <div class="flex-1 space-y-2">
-      ${company ? `<div class=\"text-xl sm:text-2xl font-extrabold tracking-tight text-accent-strong uppercase leading-tight\">${company}</div>` : ''}
-      <h3 class="text-sm sm:text-base font-semibold text-ink/90">${nama}</h3>
-
-      <div class="space-y-1 text-sm text-slate-700">
-        ${telefon ? `<div class="flex items-center gap-2"><span class="text-accent-strong">📞</span><span>${telefon}</span></div>` : ''}
-        <div class="flex items-center gap-2"><span class="text-accent-strong">📋</span><span>${statusJawatan || '-'}</span></div>
-        ${subbidang ? `<div class="flex items-center gap-2"><span class="text-accent-strong">📁</span><span>${subbidang}</span></div>` : ''}
-      </div>
-
-      <div class="text-sm text-slate-700 scrollbox">${butiran || '<span class="text-slate-400">Tiada butiran</span>'}</div>
-    </div>
-
-    <div class="sm:w-32 sm:shrink-0 flex sm:flex-col gap-2 sm:items-end">
-      ${bidang ? `<span class="inline-flex items-center px-3 py-1.5 rounded-full bg-accent/20 text-xs font-semibold text-accent-strong border border-accent/30">${bidang}</span>` : ''}
-    </div>
-  </div>
-
-  <div class="flex items-center gap-2 pt-2 border-t border-slate-100 mt-auto flex-wrap">
-    ${picKad ? `<a href="${picKad}" target="_blank" class="px-3 py-2 bg-slate-50 text-ink rounded-md text-sm font-semibold flex items-center gap-2 border border-slate-200 hover:bg-slate-100">📎 Lihat Kad</a>` : ''}
-    <a href="https://api.whatsapp.com/send?text=${waText}" target="_blank" class="ml-auto px-3 py-2 bg-accent text-ink rounded-md text-sm font-semibold flex items-center gap-2 hover:bg-accent-strong/90 hover:text-white">📤 WhatsApp</a>
-  </div>
-</article>
-`.trim();
-
-            return {
-              bidang: bidangRaw || '',
-              fields: {
-                company: companyRaw,
-                nama: namaRaw,
-                telefon: telefonRaw,
-                bidang: bidangRaw,
-                subbidang: subbidangRaw,
-                butiran: butiranRaw,
-                picKad: picKadRaw,
-                statusJawatan: statusJawatan
-              },
-              html
-            };
-          }).filter(Boolean);
-
-          const sel = document.getElementById('bidangSelect');
-          sel.innerHTML = '<option value="Semua">Semua</option>';
-          bidangSet = new Set(allCards.map(c => c.bidang).filter(Boolean));
-          [...bidangSet].sort().forEach(b => {
-            const opt = document.createElement('option');
-            opt.value = b; opt.textContent = b;
-            sel.appendChild(opt);
-          });
-
-          populateChips();
-          renderCards('Semua');
-          initSearchIndex();
+          allCards = (data || []).map(createCard).filter(Boolean);
+          byId('directoryMeta').textContent = `${allCards.length} perkhidmatan diluluskan untuk komuniti`;
+          setLoading(false);
+          byId('bidangSelect').innerHTML = CATEGORY_GROUPS.map(category => `<option value="${escapeHTML(category.label)}">${escapeHTML(category.label)}</option>`).join('');
+          byId('bidangSelect').value = selectedGroup;
+          drawCategories();
+          updateDirectory();
         })
-        .catch(e => {
-          isLoading = false;
-          hideSkeleton();
-          renderErrorState(e);
-        });
+        .catch(error => { setLoading(false); setError(error); byId('searchCount').textContent = 'Data belum tersedia'; byId('directoryMeta').textContent = 'Sila cuba muat semula halaman.'; });
 
-      const shareBtn = document.getElementById('shareLink');
-      const pageUrl = window.location.href;
-      shareBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent('Senarai Perkhidmatan Penduduk: ' + pageUrl)}`;
+      byId('copyLink').addEventListener('click', async () => {
+        const label = byId('copyLink').querySelector('span');
+        try { await navigator.clipboard.writeText(window.location.href); label.textContent = 'Pautan disalin'; setTimeout(() => { label.textContent = 'Salin pautan'; }, 1800); }
+        catch { label.textContent = 'Salin gagal'; setTimeout(() => { label.textContent = 'Salin pautan'; }, 1800); }
+      });
     });
   </script>
 </body>
