@@ -166,10 +166,18 @@ main h2 { margin-bottom: 5px; font: 800 27px/1.2 "Manrope", sans-serif; letter-s
   .topbar .register-button span { display: none; }
   .topbar .register-button i { width: 19px; height: 19px; }
   .mobile-shortcuts { position: sticky; top: 64px; z-index: 19; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 8px 16px; border-bottom: 1px solid #e4eaf4; background: rgba(255,255,255,.97); backdrop-filter: blur(12px); }
-  .mobile-shortcut { min-height: 38px; border: 1px solid #dce6f5; border-radius: 10px; background: #f8faff; color: #425579; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; font-weight: 700; transition: background .16s ease, border-color .16s ease, color .16s ease; }
+  .mobile-shortcut { min-height: 42px; border: 1px solid #dce6f5; border-radius: 11px; background: #f8faff; color: #425579; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; font-weight: 800; box-shadow: 0 3px 10px #243e700d; transition: transform .16s ease, background .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease; }
   button.mobile-shortcut { width: 100%; cursor: pointer; }
   .mobile-shortcut:hover, .mobile-shortcut:focus-visible { border-color: #b8cbed; background: var(--blue-wash); color: var(--brand); }
   .mobile-shortcut i { width: 16px; height: 16px; color: var(--brand); }
+  .mobile-shortcut-search { border-color: var(--brand); background: var(--brand); color: #fff; box-shadow: 0 4px 12px #1745c233; }
+  .mobile-shortcut-search i { color: #fff; }
+  .mobile-shortcut-search:hover, .mobile-shortcut-search:focus-visible { border-color: var(--brand-dark); background: var(--brand-dark); color: #fff; box-shadow: 0 5px 14px #1745c244; }
+  .mobile-shortcut-category { border-color: #e8b735; background: #f7cb55; color: #24345b; box-shadow: 0 4px 12px #d9a52b2b; }
+  .mobile-shortcut-category i { color: #24345b; }
+  .mobile-shortcut-category:hover, .mobile-shortcut-category:focus-visible { border-color: #d5a324; background: #f3bf3d; color: #1b294b; box-shadow: 0 5px 14px #d9a52b3d; }
+  .mobile-shortcut:active { transform: translateY(1px); }
+  .mobile-shortcut:focus-visible { outline: 3px solid #96b9ff; outline-offset: 2px; }
   .mobile-shortcut .shortcut-chevron { width: 13px; height: 13px; margin-left: -3px; transition: transform .16s ease; }
   #categoryShortcut[aria-expanded="true"] .shortcut-chevron { transform: rotate(180deg); }
   .shortcut-category-menu { grid-column: 1 / -1; padding: 12px; border: 1px solid #dce6f5; border-radius: 13px; background: #fff; box-shadow: 0 10px 26px #243e7014; }
